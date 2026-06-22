@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Central OPS</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f6ff;color:#1e293b;font-size:14px}
+.app{padding:16px;max-width:1000px;margin:0 auto}
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-icon{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 10px rgba(59,130,246,.3);color:#fff;font-weight:700}
+.logo-text{font-size:18px;font-weight:700;color:#1e40af}
+.logo-sub{font-size:11px;color:#64748b}
+.hright{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.week-badge{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:#2563eb}
+/* TABS */
+.tabs{display:flex;gap:3px;margin-bottom:16px;background:#dbeafe;border-radius:12px;padding:3px;width:fit-content;flex-wrap:wrap}
+.tab{padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:#64748b;border-radius:9px;transition:all .15s;white-space:nowrap}
+.tab.active{background:#fff;color:#1d4ed8;box-shadow:0 1px 5px rgba(59,130,246,.18)}
+.page{display:none}.page.active{display:block}
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.kpi{background:#fff;border-radius:12px;padding:14px 16px;border:1.5px solid #e2eaf8;box-shadow:0 1px 4px rgba(59,130,246,.06)}
+.kpi-ico{font-size:18px;margin-bottom:5px}
+.kv{font-size:24px;font-weight:700;line-height:1}
+.kv.blue{color:#2563eb}.kv.green{color:#16a34a}.kv.teal{color:#0f766e}.kv.red{color:#dc2626}.kv.amber{color:#d97706}
+.kl{font-size:10px;color:#64748b;margin-top:3px;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+/* CARD */
+.card{background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid #e2eaf8;margin-bottom:12px;box-shadow:0 1px 4px rgba(59,130,246,.05)}
+.card:last-child{margin-bottom:0}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.ct{font-size:12px;font-weight:700;color:#1e293b;text-transform:uppercase;letter-spacing:.05em}
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-size:10px;font-weight:600;color:#94a3b8;padding:6px 7px;border-bottom:1.5px solid #e2eaf8;text-transform:uppercase;letter-spacing:.04em}
+td{padding:9px 7px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f8fbff}
+/* BADGES */
+.bx{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.bx-g{background:#dcfce7;color:#15803d}.bx-r{background:#fee2e2;color:#b91c1c}
+.bx-b{background:#dbeafe;color:#1d4ed8}.bx-y{background:#fef3c7;color:#92400e}
+.bx-t{background:#ccfbf1;color:#0f766e}.bx-p{background:#ede9fe;color:#6d28d9}
+/* BTN */
+.btn{padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #cbd5e1;border-radius:9px;background:#fff;color:#1e293b;transition:all .12s;white-space:nowrap}
+.btn:hover{background:#f0f6ff;border-color:#93c5fd}
+.btn-b{background:#2563eb;color:#fff;border-color:#1d4ed8}.btn-b:hover{background:#1d4ed8}
+.btn-g{background:#16a34a;color:#fff;border-color:#15803d}.btn-g:hover{background:#15803d}
+.btn-r{background:#fee2e2;color:#b91c1c;border-color:#fca5a5;padding:3px 8px;font-size:11px}
+.btn-y{background:#fef3c7;color:#92400e;border-color:#fcd34d}
+/* INPUT */
+.ei{font-size:12px;padding:5px 8px;border:1.5px solid #cbd5e1;border-radius:7px;background:#fff;color:#1e293b}
+.ei:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+.ei.sm{width:60px}.ei.md{width:85px}
+/* PROGRESS */
+.pb-wrap{background:#e0eaff;border-radius:4px;height:5px;overflow:hidden;margin-top:4px}
+.pb{height:100%;border-radius:4px;transition:width .4s}
+/* RANK */
+.rank-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #f1f5f9}
+.rank-row:last-child{border-bottom:none}
+.rank-info{flex:1;padding:0 10px}
+.rank-name{font-size:13px;font-weight:600}
+.rank-sub{font-size:11px;color:#64748b;margin-top:2px;line-height:1.5}
+/* ALERT BOX */
+.alert-box{background:#fef2f2;border:1.5px solid #fca5a5;border-radius:10px;padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.alert-box.warn{background:#fffbeb;border-color:#fcd34d}
+/* BANNER */
+.banner{background:#dbeafe;color:#1d4ed8;font-size:12px;font-weight:600;padding:7px 14px;border-radius:10px;display:none;margin-bottom:10px;border:1.5px solid #93c5fd}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(30,64,175,.2);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:1000}
+.modal-box{background:#fff;border-radius:16px;padding:22px;width:min(420px,90vw);border:1.5px solid #bfdbfe;box-shadow:0 8px 32px rgba(59,130,246,.15);max-height:88vh;overflow-y:auto}
+.modal-box h3{font-size:15px;font-weight:700;margin-bottom:14px}
+.fr{margin-bottom:9px}
+.fr label{font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+.fr input,.fr select,.fr textarea{width:100%;font-size:13px;border:1.5px solid #cbd5e1;border-radius:8px;padding:6px 9px;background:#fff;color:#1e293b}
+.fr input:focus,.fr select:focus{outline:none;border-color:#3b82f6}
+.fr textarea{min-height:50px;resize:vertical}
+.mbtns{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+/* TOTAL BAR */
+.total-bar{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:11px 16px;display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+/* REGRAS */
+.regras-info{background:#f8fbff;border:1.5px solid #bfdbfe;border-radius:10px;padding:11px 15px;margin-bottom:12px;font-size:12px;color:#1e40af;line-height:1.9}
+/* LAUNCH BTNS */
+.launch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.launch-btn{background:#fff;border-radius:14px;border:1.5px solid #e2eaf8;padding:16px 12px;text-align:center;cursor:pointer;transition:all .15s;box-shadow:0 1px 4px rgba(59,130,246,.05)}
+.launch-btn:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(59,130,246,.12)}
+.launch-btn.pos{border-color:#86efac}.launch-btn.rev{border-color:#99f6e4}.launch-btn.neg{border-color:#fca5a5}
+/* WEEK SELECTOR */
+.week-sel{display:flex;gap:4px;margin-bottom:12px}
+.wbtn{padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid #cbd5e1;border-radius:8px;background:#fff;color:#64748b}
+.wbtn.active{background:#2563eb;color:#fff;border-color:#1d4ed8}
+/* PROGRESS CIRCLE */
+.prog-wrap{display:flex;align-items:center;gap:8px;margin-top:4px}
+.prog-bar-h{flex:1;background:#e0eaff;border-radius:4px;height:6px;overflow:hidden}
+.prog-fill{height:100%;border-radius:4px;background:#3b82f6}
+/* LOJA MINI CARD */
+.loja-mini{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;margin:2px}
+.loja-ok{background:#dcfce7;color:#15803d}.loja-no{background:#f1f5f9;color:#64748b}
+/* ANUAL PODIUM */
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:8px;height:100px;margin:10px 0}
+.pod-col{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1}
+.pod-bar{width:100%;border-radius:6px 6px 0 0;background:#3b82f6;min-height:20px;transition:height .4s}
+.pod-label{font-size:10px;font-weight:600;color:#64748b;text-align:center}
+.pod-val{font-size:11px;font-weight:700;color:#2563eb}
+/* RESPONSIVE */
+@media(max-width:600px){
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .launch-grid{grid-template-columns:1fr 1fr}
+  .hright .btn{font-size:11px;padding:4px 8px}
+  .tabs{gap:2px}
+  .tab{padding:6px 10px;font-size:11px}
+}
+/* PRINT */
+@media print{
+  .no-print{display:none!important}
+  body{background:#fff!important;font-size:11px}
+  .app{padding:8px;max-width:100%}
+  .card{box-shadow:none!important;border:1px solid #ccc!important;page-break-inside:avoid;margin-bottom:8px}
+  .kpi{box-shadow:none;border:1px solid #ccc}
+  h2,h3{page-break-after:avoid}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- HEADER -->
+<div class="header no-print">
+  <div class="logo-wrap">
+    <div class="logo-icon">⚡</div>
+    <div>
+      <div class="logo-text">Central OPS</div>
+      <div class="logo-sub">Dashboard de bonificação</div>
+    </div>
+  </div>
+  <div class="hright">
+    <span class="week-badge" id="week-lbl"></span>
+    <select id="sel-mes" onchange="trocarMes()" class="ei" style="width:130px;font-weight:600;color:#1d4ed8;border-color:#bfdbfe"></select>
+    <button class="btn btn-b" onclick="showModal('novoMes')" style="font-size:11px;padding:4px 10px">+ Mês</button>
+    <button class="btn btn-g" onclick="salvarMes()" style="font-size:11px;padding:4px 10px">💾 Salvar</button>
+    <button class="btn" onclick="exportarHTML()" style="font-size:11px;padding:4px 10px;border-color:#16a34a;color:#16a34a">⬇ HTML</button>
+    <button class="btn btn-y" onclick="exportarExcel()" style="font-size:11px;padding:4px 10px">📊 Excel</button>
+    <button class="btn" onclick="window.print()" style="font-size:11px;padding:4px 10px">🖨️</button>
+  </div>
+</div>
+
+<div id="save-banner" class="banner no-print">✓ Salvo!</div>
+
+<!-- TABS -->
+<div class="tabs no-print">
+  <button class="tab active" data-id="overview" onclick="setTab('overview',this)">📊 Visão geral</button>
+  <button class="tab" data-id="semana" onclick="setTab('semana',this)">📅 Semana</button>
+  <button class="tab" data-id="operadores" onclick="setTab('operadores',this)">👥 Operadores</button>
+  <button class="tab" data-id="lancar" onclick="setTab('lancar',this)">✏️ Lançar</button>
+  <button class="tab" data-id="bonificacao" onclick="setTab('bonificacao',this)">💰 Bonificação</button>
+  <button class="tab" data-id="ocorrencias" onclick="setTab('ocorrencias',this)">⚠️ Ocorrências</button>
+  <button class="tab" data-id="anual" onclick="setTab('anual',this)">🏆 Ranking anual</button>
+  <button class="tab" data-id="historico" onclick="setTab('historico',this)">📈 Histórico</button>
+  <button class="tab" data-id="relatorio" onclick="setTab('relatorio',this)" style="color:#1d4ed8">🖨️ Relatório</button>
+</div>
+
+<!-- OVERVIEW -->
+<div id="tab-overview" class="page active">
+  <div id="alertas-top"></div>
+  <div class="kpi-row" id="kpis-ov"></div>
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px">
+    <div class="card">
+      <div class="ch"><span class="ct">🏆 Ranking do mês</span><span id="du-lbl" style="font-size:11px;color:#64748b"></span></div>
+      <div id="ranking"></div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="ch"><span class="ct">🏪 Lojas na meta</span></div>
+        <div id="lojas-ov"></div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="ch"><span class="ct">📋 Últimos lançamentos</span></div>
+        <div id="ultimos-lanc"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SEMANA -->
+<div id="tab-semana" class="page">
+  <div class="card">
+    <div class="ch">
+      <span class="ct">📅 Fechamento semanal</span>
+      <div class="week-sel" id="week-sel"></div>
+    </div>
+    <div id="semana-content"></div>
+  </div>
+  <div class="card">
+    <div class="ch"><span class="ct">📊 Progresso de metas semanais</span></div>
+    <div id="semana-metas"></div>
+  </div>
+</div>
+
+<!-- OPERADORES -->
+<div id="tab-operadores" class="page">
+  <div class="card">
+    <div class="ch">
+      <span class="ct">👥 Equipe Central</span>
+      <button class="btn btn-b" onclick="showModal('op')">+ Operador</button>
+    </div>
+    <table>
+      <thead><tr>
+        <th style="width:22%">Nome</th><th style="width:14%">Setor/Lojas</th>
+        <th style="width:8%">⭐Av.</th><th style="width:10%">🔄Rev.(+)</th>
+        <th style="width:8%">🔻Err.</th><th style="width:8%">Meta av.</th>
+        <th style="width:10%">Progresso</th><th style="width:11%">Líquido</th>
+        <th style="width:9%">Status</th><th style="width:6%"></th>
+      </tr></thead>
+      <tbody id="tab-ops"></tbody>
+    </table>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+    <div class="card">
+      <div class="ch"><span class="ct">🏪 Lojas por operador</span><button class="btn" style="font-size:11px;padding:3px 9px" onclick="showModal('editlojas')">✏️ Editar</button></div>
+      <div id="lojas-por-op"></div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">📊 Desempenho</span></div>
+      <div id="desemp-geral"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LANÇAR -->
+<div id="tab-lancar" class="page">
+  <div class="launch-grid">
+    <div class="launch-btn pos" onclick="showModal('pts-pos')">
+      <div style="font-size:26px;margin-bottom:7px">⭐</div>
+      <div style="font-size:13px;font-weight:700;color:#15803d">Avaliação</div>
+      <div style="font-size:11px;color:#64748b;margin-top:3px">+1 ponto</div>
+    </div>
+    <div class="launch-btn rev" onclick="showModal('pts-rev')">
+      <div style="font-size:26px;margin-bottom:7px">🔄</div>
+      <div style="font-size:13px;font-weight:700;color:#0f766e">Reversão</div>
+      <div style="font-size:11px;color:#64748b;margin-top:3px">+R$2,50 bônus</div>
+    </div>
+    <div class="launch-btn neg" onclick="showModal('pts-neg')">
+      <div style="font-size:26px;margin-bottom:7px">🔻</div>
+      <div style="font-size:13px;font-weight:700;color:#b91c1c">Erro</div>
+      <div style="font-size:11px;color:#64748b;margin-top:3px">−R$2,88 fixo</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><span class="ct">📜 Histórico de lançamentos</span></div>
+    <div id="hist-lanc"></div>
+  </div>
+</div>
+
+<!-- BONIFICAÇÃO -->
+<div id="tab-bonificacao" class="page">
+  <div id="regras-info" class="regras-info"></div>
+  <div class="card">
+    <div class="ch">
+      <span class="ct">💰 Bonificação do mês</span>
+      <button class="btn btn-b" onclick="salvarMes()">💾 Salvar</button>
+    </div>
+    <div style="overflow-x:auto">
+    <table style="min-width:700px">
+      <thead><tr>
+        <th style="width:18%">Operador</th>
+        <th style="width:12%">Base</th>
+        <th style="width:11%">🏪 Lojas</th>
+        <th style="width:9%">🔄 Rev.</th>
+        <th style="width:9%">🔻 Erros</th>
+        <th style="width:10%">⚠️ ADV</th>
+        <th style="width:13%">Líquido</th>
+        <th style="width:9%">Status</th>
+        <th style="width:9%">Ações</th>
+      </tr></thead>
+      <tbody id="tab-bon"></tbody>
+    </table>
+    </div>
+    <div class="total-bar">
+      <span style="font-size:13px;font-weight:700;color:#1d4ed8;text-transform:uppercase;letter-spacing:.04em">Total folha Central</span>
+      <span id="bon-total" style="font-size:21px;font-weight:700;color:#2563eb"></span>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch"><span class="ct">🏪 Lojas — editar entregas</span></div>
+    <div id="lojas-bon"></div>
+  </div>
+  <div class="card">
+    <div class="ch"><span class="ct">📝 Observações</span><button class="btn" onclick="showModal('obs')" style="font-size:11px;padding:3px 9px">✏️</button></div>
+    <div id="obs-lista"></div>
+  </div>
+</div>
+
+<!-- OCORRÊNCIAS -->
+<div id="tab-ocorrencias" class="page">
+  <div class="card">
+    <div class="ch"><span class="ct">⚠️ Ocorrências do mês</span><button class="btn btn-b" onclick="showModal('oc')">+ Nova</button></div>
+    <table>
+      <thead><tr>
+        <th style="width:10%">Data</th><th style="width:24%">Operador</th>
+        <th>Motivo</th><th style="width:13%">ADV</th><th style="width:7%"></th>
+      </tr></thead>
+      <tbody id="tab-ocs"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- RANKING ANUAL -->
+<div id="tab-anual" class="page">
+  <div class="kpi-row" id="kpis-anual"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div class="card">
+      <div class="ch"><span class="ct">🏅 Ranking acumulado</span></div>
+      <div id="rank-anual"></div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">📊 Avaliações acumuladas</span></div>
+      <div class="podium" id="podium"></div>
+      <div id="rank-anual-detalhe"></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:12px">
+    <div class="ch"><span class="ct">💰 Histórico de bonificação por operador</span></div>
+    <div style="overflow-x:auto"><canvas id="chart-linhas" style="max-height:200px"></canvas></div>
+  </div>
+</div>
+
+<!-- HISTÓRICO -->
+<div id="tab-historico" class="page">
+  <div class="kpi-row" id="kpis-hist"></div>
+  <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:12px">
+    <div class="card"><div class="ch"><span class="ct">📅 Meses salvos</span></div><div id="hist-lista"></div></div>
+    <div>
+      <div class="card" style="margin-bottom:12px">
+        <div class="ch"><span class="ct">📈 Evolução da folha</span></div>
+        <canvas id="chart-hist" style="max-height:160px"></canvas>
+      </div>
+      <div class="card">
+        <div class="ch"><span class="ct">⭐ Avaliações por mês</span></div>
+        <canvas id="chart-av" style="max-height:160px"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RELATÓRIO -->
+<div id="tab-relatorio" class="page">
+  <div class="no-print" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+    <div>
+      <div style="font-size:15px;font-weight:700">Relatório de fechamento — Central OPS</div>
+      <div id="rel-lbl" style="font-size:12px;color:#64748b"></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-g" onclick="window.print()">🖨️ Imprimir</button>
+      <button class="btn" onclick="exportarTxtCentral()" style="border-color:#1d4ed8;color:#1d4ed8">📥 Exportar .txt</button>
+    </div>
+  </div>
+  <div id="rel-content" style="background:#fff;border:1.5px solid #1a1a1a;border-radius:14px;padding:28px 32px"></div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-area" style="display:none" class="no-print">
+  <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+      <h3 id="modal-title">—</h3>
+      <div id="modal-content"></div>
+      <div class="mbtns">
+        <button class="btn" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-b" id="msave">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- .app -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ── UTILS ──────────────────────────────────────────────────────────────────
+function diasUteis(ano,mes){
+  let n=0,dim=new Date(ano,mes+1,0).getDate();
+  for(let d=1;d<=dim;d++){const dw=new Date(ano,mes,d).getDay();if(dw>=1&&dw<=6)n++;}
+  return n;
+}
+function semanaAtual(){
+  const now=new Date(),s=new Date(now.getFullYear(),now.getMonth(),1);
+  return`Semana ${Math.floor((now-s)/(7*24*3600*1e3))+1} · ${now.toLocaleString('pt-BR',{month:'long',year:'numeric'})}`;
+}
+function brl(v){
+  if(!v||isNaN(v)||v===0)return'—';
+  return'R$\u00a0'+parseFloat(v).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+}
+function hoje(){const n=new Date();return`${n.getDate().toString().padStart(2,'0')}/${(n.getMonth()+1).toString().padStart(2,'0')}`}
+function semanaDoLanc(data,ano,mes){
+  // data no formato DD/MM
+  if(!data||data==='—')return 0;
+  const parts=data.split('/');
+  const d=parseInt(parts[0]);
+  return Math.floor((d-1)/7)+1;
+}
+
+// ── CONSTANTES ─────────────────────────────────────────────────────────────
+const REGRAS={
+  metaRotina:75,metaAtend:75,bonusPorLoja:150,valorRev:2.50,valorErro:2.88,
+  advVerbal:{normal:25,grave:50,gravissima:100},
+  advEscrita:{normal:50,grave:75,gravissima:100}
+};
+const SETORES=["São Paulo","Brasília","Belo Horizonte","Curitiba","Floripa","Porto Alegre","Balneário","Central","SP / Brasília","Floripa / BC","BH / Curitiba","BH / POA"];
+const LOJAS_BASE=["Balneário","Belo Horizonte","Brasília","Curitiba","Floripa","Porto Alegre","São Paulo"];
+
+// ── LOJAS POR OPERADOR POR MÊS ─────────────────────────────────────────────
+const LOJAS_POR_OP={
+  "2026-01":{"Bruna 2°":["Belo Horizonte","Porto Alegre"],"Giovanna":["Floripa","Balneário"],"Lucas 1°":["São Paulo"],"Maria Eduarda":["Curitiba","Porto Alegre"],"Mireia":["Balneário","Brasília"]},
+  "2026-02":{"Jessica":["Belo Horizonte"],"Giovanna":["Floripa","Balneário"],"Lucas":["São Paulo"],"Maria Eduarda":["Curitiba","Porto Alegre"],"Mireia":["Brasília"]},
+  "2026-03":{"Alana Negreti Santos":["São Paulo"],"Giovanna de Almeida":["Belo Horizonte","Porto Alegre"],"Lucas Basilio":["Curitiba"],"Maria Eduarda Amaral":["Floripa"],"Mireia Celestino":["Balneário","Brasília"]},
+  "2026-04":{"Alana Negreti Santos":["São Paulo","Brasília"],"Lucas Basilio":["Belo Horizonte","Curitiba"],"Maria Eduarda Amaral":["Floripa","Balneário"],"Brenda":["Porto Alegre"],"Giovanna":["Belo Horizonte","Porto Alegre"]},
+  "2026-05":{"Alana Negreti Santos":["São Paulo","Brasília"],"Lucas Basilio":["Belo Horizonte","Curitiba"],"Maria Eduarda Amaral":["Floripa","Balneário"],"Camily":["Porto Alegre"]}
+};
+
+// ── DADOS HISTÓRICOS ───────────────────────────────────────────────────────
+function mkLojas(dados){
+  return LOJAS_BASE.map(n=>{const d=dados.find(x=>x.nome===n)||{};return{nome:n,meta:d.meta||0,entregues:d.entregues||0};});
+}
+
+const DADOS=[
+  {id:"2026-01",label:"Janeiro 2026",ano:2026,mes:0,
+    ops:[{nome:"Bruna 2°",setor:"BH / POA",metaAv:8,novo:false},{nome:"Giovanna",setor:"Floripa / BC",metaAv:10,novo:false},{nome:"Lucas 1°",setor:"São Paulo",metaAv:8,novo:false},{nome:"Maria Eduarda",setor:"Curitiba",metaAv:8,novo:false},{nome:"Mireia",setor:"Balneário",metaAv:8,novo:false}],
+    pontos:[{nome:"Bruna 2°",av:7,erros:1,rev:0},{nome:"Giovanna",av:6,erros:0,rev:6},{nome:"Lucas 1°",av:8,erros:1,rev:6},{nome:"Maria Eduarda",av:3,erros:1,rev:0},{nome:"Mireia",av:2,erros:1,rev:1}],
+    lancamentos:[{id:1,data:"—",op:"Giovanna",tipo:"Reversão",qtd:6,semana:0,motivo:"Reversões jan"},{id:2,data:"—",op:"Lucas 1°",tipo:"Reversão",qtd:6,semana:0,motivo:"Reversões jan"},{id:3,data:"—",op:"Mireia",tipo:"Reversão",qtd:1,semana:0,motivo:"Reversão conquista"}],
+    ocorrencias:[],
+    bonificacao:[{nome:"Bruna 2°",total:547.88},{nome:"Giovanna",total:259.24},{nome:"Lucas 1°",total:312.23},{nome:"Maria Eduarda",total:341.59},{nome:"Mireia",total:406.19}],
+    lojas:mkLojas([{nome:"Balneário",meta:400,entregues:472},{nome:"Belo Horizonte",meta:700,entregues:847},{nome:"Brasília",meta:600,entregues:632},{nome:"Curitiba",meta:1200,entregues:1305},{nome:"Floripa",meta:1500,entregues:1310},{nome:"Porto Alegre",meta:750,entregues:775},{nome:"São Paulo",meta:1500,entregues:1509}]),
+    observacoes:["Janeiro 2026 — dados históricos"]},
+
+  {id:"2026-02",label:"Fevereiro 2026",ano:2026,mes:1,
+    ops:[{nome:"Jessica",setor:"Belo Horizonte",metaAv:8,novo:false},{nome:"Giovanna",setor:"Floripa / BC",metaAv:10,novo:false},{nome:"Lucas",setor:"São Paulo",metaAv:8,novo:false},{nome:"Maria Eduarda",setor:"Curitiba",metaAv:8,novo:false},{nome:"Mireia",setor:"Brasília",metaAv:10,novo:false}],
+    pontos:[{nome:"Jessica",av:6,erros:4,rev:0},{nome:"Giovanna",av:13,erros:0,rev:0},{nome:"Lucas",av:1,erros:0,rev:4},{nome:"Maria Eduarda",av:7,erros:1,rev:4},{nome:"Mireia",av:13,erros:3,rev:3}],
+    lancamentos:[{id:10,data:"04/02",op:"Mireia",tipo:"Erro",qtd:1,semana:1,motivo:"Baixas pendentes"},{id:11,data:"05/02",op:"Jessica",tipo:"Erro",qtd:1,semana:1,motivo:"Esqueceu espelho de rota"},{id:12,data:"10/02",op:"Jessica",tipo:"Erro",qtd:1,semana:2,motivo:"Falta sem doc"},{id:13,data:"13/02",op:"Mireia",tipo:"Erro",qtd:1,semana:2,motivo:"Espelho de rota errado"},{id:14,data:"14/02",op:"Mireia",tipo:"Erro",qtd:1,semana:2,motivo:"Esqueceu espelho de rota"},{id:15,data:"16/02",op:"Jessica",tipo:"Erro",qtd:1,semana:3,motivo:"Atraso +10min"},{id:16,data:"17/02",op:"Maria Eduarda",tipo:"Erro",qtd:1,semana:3,motivo:"Esqueceu pedido cancelado"},{id:17,data:"19/02",op:"Mireia",tipo:"Erro",qtd:1,semana:3,motivo:"Atraso +10min"},{id:18,data:"23/02",op:"Mireia",tipo:"Erro",qtd:1,semana:4,motivo:"Atraso +10min"},{id:19,data:"23/02",op:"Jessica",tipo:"Erro",qtd:1,semana:4,motivo:"Atraso +10min"},{id:20,data:"—",op:"Lucas",tipo:"Reversão",qtd:4,semana:0,motivo:"Reversões fev"},{id:21,data:"—",op:"Maria Eduarda",tipo:"Reversão",qtd:4,semana:0,motivo:"Reversões fev"},{id:22,data:"—",op:"Mireia",tipo:"Reversão",qtd:3,semana:0,motivo:"Reversões fev"}],
+    ocorrencias:[{id:100,data:"04/02",op:"Mireia",motivo:"Baixas pendentes",adv:"—"},{id:101,data:"05/02",op:"Jessica",motivo:"Esqueceu espelho de rota",adv:"—"},{id:102,data:"10/02",op:"Jessica",motivo:"Falta sem apresentação de DOC",adv:"—"},{id:103,data:"13/02",op:"Mireia",motivo:"Espelho de rota errado",adv:"—"},{id:104,data:"14/02",op:"Mireia",motivo:"Esqueceu o espelho de rota",adv:"—"},{id:105,data:"16/02",op:"Jessica",motivo:"Atraso +10min tolerância",adv:"—"},{id:106,data:"17/02",op:"Maria Eduarda",motivo:"Esqueceu pedido cancelado na rota",adv:"—"},{id:107,data:"19/02",op:"Mireia",motivo:"Atraso +10min tolerância",adv:"—"},{id:108,data:"23/02",op:"Mireia",motivo:"Atraso +10min tolerância",adv:"—"},{id:109,data:"23/02",op:"Jessica",motivo:"Atraso +10min tolerância",adv:"—"}],
+    bonificacao:[{nome:"Jessica",total:124.96},{nome:"Giovanna",total:450.00},{nome:"Lucas",total:160.00},{nome:"Maria Eduarda",total:453.72},{nome:"Mireia",total:138.66}],
+    lojas:mkLojas([{nome:"Balneário",meta:400,entregues:501},{nome:"Belo Horizonte",meta:700,entregues:723},{nome:"Brasília",meta:600,entregues:564},{nome:"Curitiba",meta:1200,entregues:1069},{nome:"Floripa",meta:1500,entregues:1205},{nome:"Porto Alegre",meta:750,entregues:762},{nome:"São Paulo",meta:1500,entregues:1206}]),
+    observacoes:["Jessica: BH — 4 ocorrências","Mireia: BSB — 3 ocorrências"]},
+
+  {id:"2026-03",label:"Março 2026",ano:2026,mes:2,
+    ops:[{nome:"Alana Negreti Santos",setor:"São Paulo",metaAv:10,novo:false},{nome:"Giovanna de Almeida",setor:"BH / POA",metaAv:12,novo:false},{nome:"Lucas Basilio",setor:"Curitiba",metaAv:8,novo:false},{nome:"Maria Eduarda Amaral",setor:"Floripa",metaAv:8,novo:false},{nome:"Mireia Celestino",setor:"Balneário",metaAv:10,novo:false}],
+    pontos:[{nome:"Alana Negreti Santos",av:9,erros:1,rev:4},{nome:"Giovanna de Almeida",av:14,erros:2,rev:0},{nome:"Lucas Basilio",av:6,erros:2,rev:0},{nome:"Maria Eduarda Amaral",av:4,erros:2,rev:2},{nome:"Mireia Celestino",av:10,erros:6,rev:2}],
+    lancamentos:[{id:30,data:"03/03",op:"Maria Eduarda Amaral",tipo:"Erro",qtd:1,semana:1,motivo:"Espelho de rota fora do prazo"},{id:31,data:"04/03",op:"Maria Eduarda Amaral",tipo:"Erro",qtd:1,semana:1,motivo:"Esqueceu atualização"},{id:32,data:"05/03",op:"Alana Negreti Santos",tipo:"Erro",qtd:1,semana:1,motivo:"Esqueceu atualização de endereço"},{id:33,data:"07/03",op:"Mireia Celestino",tipo:"Erro",qtd:1,semana:1,motivo:"Atraso — ADV escrita"},{id:34,data:"12/03",op:"Mireia Celestino",tipo:"Erro",qtd:1,semana:2,motivo:"Checklist loja errada"},{id:35,data:"16/03",op:"Giovanna de Almeida",tipo:"Erro",qtd:1,semana:3,motivo:"Checklist loja errada"},{id:36,data:"18/03",op:"Giovanna de Almeida",tipo:"Erro",qtd:1,semana:3,motivo:"Checklist loja errada"},{id:37,data:"21/03",op:"Lucas Basilio",tipo:"Erro",qtd:1,semana:3,motivo:"Chinelo/shorts — ADV verbal"},{id:38,data:"21/03",op:"Mireia Celestino",tipo:"Erro",qtd:1,semana:3,motivo:"Atestado 2 dias"},{id:39,data:"27/03",op:"Mireia Celestino",tipo:"Erro",qtd:1,semana:4,motivo:"Esqueceu espelho BC"},{id:40,data:"27/03",op:"Lucas Basilio",tipo:"Erro",qtd:1,semana:4,motivo:"Enviou pedido errado"},{id:41,data:"—",op:"Alana Negreti Santos",tipo:"Reversão",qtd:4,semana:0,motivo:"Reversões mar"},{id:42,data:"—",op:"Maria Eduarda Amaral",tipo:"Reversão",qtd:2,semana:0,motivo:"Reversões mar"},{id:43,data:"—",op:"Mireia Celestino",tipo:"Reversão",qtd:2,semana:0,motivo:"Reversões mar"}],
+    ocorrencias:[{id:200,data:"03/03",op:"Maria Eduarda",motivo:"Espelho de rota fora do prazo",adv:"—"},{id:201,data:"07/03",op:"Mireia",motivo:"Atraso +10min",adv:"ADV escrita"},{id:202,data:"14/03",op:"Alana",motivo:"Atraso +10min",adv:"ADV verbal"},{id:203,data:"21/03",op:"Lucas",motivo:"Veio de chinelo e shorts",adv:"ADV verbal"}],
+    bonificacao:[{nome:"Alana Negreti Santos",total:304.24},{nome:"Giovanna de Almeida",total:588.48},{nome:"Lucas Basilio",total:288.48},{nome:"Maria Eduarda Amaral",total:143.48},{nome:"Mireia Celestino",total:515.44}],
+    lojas:mkLojas([{nome:"Balneário",meta:400,entregues:536},{nome:"Belo Horizonte",meta:700,entregues:906},{nome:"Brasília",meta:600,entregues:716},{nome:"Curitiba",meta:1200,entregues:1432},{nome:"Floripa",meta:1500,entregues:1474},{nome:"Porto Alegre",meta:750,entregues:1047},{nome:"São Paulo",meta:1500,entregues:1500}]),
+    observacoes:["Mireia: ADV escrita 07/03","Alana: ADV verbal 14/03","Lucas: ADV verbal shorts/chinelo"]},
+
+  {id:"2026-04",label:"Abril 2026",ano:2026,mes:3,
+    ops:[{nome:"Alana Negreti Santos",setor:"SP / Brasília",metaAv:12,novo:false},{nome:"Lucas Basilio",setor:"BH / Curitiba",metaAv:10,novo:false},{nome:"Maria Eduarda Amaral",setor:"Floripa / BC",metaAv:10,novo:false},{nome:"Brenda",setor:"Porto Alegre",metaAv:8,novo:false},{nome:"Giovanna",setor:"BH / POA",metaAv:10,novo:false}],
+    pontos:[{nome:"Alana Negreti Santos",av:28,erros:2,rev:11},{nome:"Lucas Basilio",av:24,erros:0,rev:0},{nome:"Maria Eduarda Amaral",av:12,erros:0,rev:3},{nome:"Brenda",av:22,erros:5,rev:1},{nome:"Giovanna",av:0,erros:0,rev:0}],
+    lancamentos:[{id:50,data:"04/04",op:"Alana Negreti Santos",tipo:"Erro",qtd:1,semana:1,motivo:"Atraso — ADV 25%"},{id:51,data:"07/04",op:"Alana Negreti Santos",tipo:"Erro",qtd:1,semana:1,motivo:"Falta com justificativa"},{id:52,data:"21/04",op:"Brenda",tipo:"Erro",qtd:1,semana:3,motivo:"Falta sem justificativa"},{id:53,data:"22/04",op:"Brenda",tipo:"Erro",qtd:1,semana:3,motivo:"Atestado 3 dias"},{id:54,data:"28/04",op:"Brenda",tipo:"Erro",qtd:1,semana:4,motivo:"Não enviou enquete"},{id:55,data:"28/04",op:"Brenda",tipo:"Erro",qtd:1,semana:4,motivo:"Checklist errado"},{id:56,data:"02/05",op:"Brenda",tipo:"Erro",qtd:1,semana:4,motivo:"Falta sem justificativa"},{id:57,data:"—",op:"Alana Negreti Santos",tipo:"Reversão",qtd:11,semana:0,motivo:"Reversões abr"},{id:58,data:"—",op:"Maria Eduarda Amaral",tipo:"Reversão",qtd:3,semana:0,motivo:"Reversões abr"},{id:59,data:"—",op:"Brenda",tipo:"Reversão",qtd:1,semana:0,motivo:"Reversão conquista"}],
+    ocorrencias:[{id:300,data:"04/04",op:"Alana",motivo:"Falta com justificativa",adv:"—"},{id:303,data:"14/04",op:"Alana",motivo:"Atraso +10min",adv:"ADV — 25%"},{id:304,data:"21/04",op:"Brenda",motivo:"Falta sem justificativa",adv:"—"},{id:305,data:"22/04",op:"Brenda",motivo:"Atestado 3 dias",adv:"—"}],
+    bonificacao:[{nome:"Alana Negreti Santos",total:499.48},{nome:"Lucas Basilio",total:300},{nome:"Maria Eduarda Amaral",total:457.50},{nome:"Brenda",total:0},{nome:"Giovanna",total:170.72}],
+    lojas:mkLojas([{nome:"Balneário",meta:450,entregues:515},{nome:"Belo Horizonte",meta:850,entregues:811},{nome:"Brasília",meta:700,entregues:704},{nome:"Curitiba",meta:1450,entregues:1129},{nome:"Floripa",meta:1500,entregues:1278},{nome:"Porto Alegre",meta:900,entregues:763},{nome:"São Paulo",meta:1550,entregues:1294}]),
+    observacoes:["Alana: ADV 25% por atraso","Brenda: 5 erros — saiu em maio"]},
+
+  {id:"2026-05",label:"Maio 2026",ano:2026,mes:4,
+    ops:[{nome:"Alana Negreti Santos",setor:"SP / Brasília",metaAv:12,novo:false},{nome:"Lucas Basilio",setor:"BH / Curitiba",metaAv:10,novo:false},{nome:"Maria Eduarda Amaral",setor:"Floripa / BC",metaAv:10,novo:false},{nome:"Camily",setor:"Porto Alegre",metaAv:8,novo:true,_liqManual:0}],
+    pontos:[{nome:"Alana Negreti Santos",av:10,erros:0,rev:12},{nome:"Lucas Basilio",av:2,erros:2,rev:4},{nome:"Maria Eduarda Amaral",av:0,erros:0,rev:0},{nome:"Camily",av:0,erros:2,rev:0,_liqManual:0}],
+    lancamentos:[{id:60,data:"04/05",op:"Brenda",tipo:"Erro",qtd:1,semana:1,motivo:"Check-list fora do prazo"},{id:61,data:"06/05",op:"Brenda",tipo:"Erro",qtd:1,semana:1,motivo:"Espelho não enviado"},{id:62,data:"12/05",op:"Camily",tipo:"Erro",qtd:1,semana:2,motivo:"Baixa no pedido errado"},{id:63,data:"16/05",op:"Camily",tipo:"Erro",qtd:1,semana:3,motivo:"Não informou loja sobre troca"},{id:64,data:"20/05",op:"Lucas Basilio",tipo:"Erro",qtd:1,semana:3,motivo:"Não enviou enquete tarde CWB"},{id:65,data:"—",op:"Alana Negreti Santos",tipo:"Reversão",qtd:12,semana:0,motivo:"Reversões mai"},{id:66,data:"—",op:"Lucas Basilio",tipo:"Reversão",qtd:4,semana:0,motivo:"Reversões mai"}],
+    ocorrencias:[{id:400,data:"12/05",op:"Camily",motivo:"Baixa no pedido errado",adv:"—"},{id:401,data:"16/05",op:"Camily",motivo:"Não informou loja sobre troca",adv:"—"},{id:402,data:"20/05",op:"Lucas",motivo:"Não enviou enquete tarde CWB",adv:"—"}],
+    bonificacao:[],
+    lojas:mkLojas([{nome:"Balneário",meta:437,entregues:449},{nome:"Belo Horizonte",meta:874,entregues:874},{nome:"Brasília",meta:777,entregues:585},{nome:"Curitiba",meta:1408,entregues:1408},{nome:"Floripa",meta:1602,entregues:1279},{nome:"Porto Alegre",meta:1019,entregues:1019},{nome:"São Paulo",meta:1650,entregues:1652}]),
+    observacoes:["Camily início 07/05 — Porto Alegre","Alana: SP ✓ | BSB ✗","Lucas: BH ✗ | CWB ✗","Maria Eduarda: Floripa ✗ | BC ✓"]}
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+function ld(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+let meses=ld('cv3_meses',DADOS);
+let mesAtual=ld('cv3_cur','2026-05');
+let nid=ld('cv3_nid',600);
+function getMes(id){return meses.find(m=>m.id===id)||meses[meses.length-1]}
+function getD(){return getMes(mesAtual)}
+function saveAll(){sv('cv3_meses',meses);sv('cv3_cur',mesAtual);sv('cv3_nid',nid)}
+
+// ── CÁLCULOS ───────────────────────────────────────────────────────────────
+function getDU(d){return diasUteis(d.ano,d.mes)}
+function getLojasOp(op,d){
+  const mapa=LOJAS_POR_OP[d.id]||{};
+  if(mapa[op])return mapa[op];
+  // fallback: lojas customizadas no estado
+  const o=d.ops.find(x=>x.nome===op);
+  return o?.lojas||[];
+}
+function getPts(op,d){
+  const p=d.pontos.find(x=>x.nome===op)||{av:0,erros:0,rev:0};
+  return{av:p.av||0,erros:p.erros||0,rev:p.rev||0};
+}
+function getBonusLojas(op,d){
+  const lojas=getLojasOp(op,d);
+  return lojas.reduce((s,nome)=>{
+    const l=d.lojas.find(x=>x.nome===nome);
+    return s+(l&&l.entregues>0&&l.entregues>=l.meta?REGRAS.bonusPorLoja:0);
+  },0);
+}
+function getTipoPctCen(tipo,grav){
+  if(tipo==='ADV verbal'||tipo==='Adv. verbal')return REGRAS.advVerbal[grav]||REGRAS.advVerbal.normal;
+  if(tipo==='ADV escrita'||tipo==='Adv. escrita')return REGRAS.advEscrita[grav]||REGRAS.advEscrita.normal;
+  return 0;
+}
+
+function calcLiq(op,d){
+  const p=getPts(op,d);
+  const lojas=getLojasOp(op,d);
+  const nL=lojas.length>0?lojas.length:1;
+
+  // Base = R$75 rotina + R$75 atendimento POR LOJA
+  const base=nL*(REGRAS.metaRotina+REGRAS.metaAtend);
+  const bonusLojas=getBonusLojas(op,d);
+  const bonusRev=parseFloat((p.rev*REGRAS.valorRev).toFixed(2));
+
+  // Desconto erros = R$2,88 por erro
+  const descErros=parseFloat((p.erros*REGRAS.valorErro).toFixed(2));
+
+  // Desconto ADV = % do base
+  let descAdv=0;
+  (d.ocorrencias||[]).filter(o=>o.op===op).forEach(o=>{
+    const pct=getTipoPctCen(o.tipo,o.grav||'normal');
+    descAdv+=base*(pct/100);
+  });
+  descAdv=parseFloat(descAdv.toFixed(2));
+  const descTotal=parseFloat((descErros+descAdv).toFixed(2));
+
+  // Override manual
+  const opObj=d.ops?.find(x=>x.nome===op);
+  if(opObj&&opObj._liqZerado===true)return{base,bonusLojas,bonusRev,descErros,descAdv,descTotal,liq:0,lojas,nL,zerado:true};
+  if(opObj&&opObj._liqManual>0)return{base,bonusLojas,bonusRev,descErros,descAdv,descTotal,liq:opObj._liqManual,lojas,nL,manual:true};
+
+  // Histórico com total fixo (meses antigos sem mapeamento)
+  const temMapa=!!(LOJAS_POR_OP[d.id]&&LOJAS_POR_OP[d.id][op]);
+  const bh=d.bonificacao?.find(x=>x.nome===op);
+  if(!temMapa&&bh&&bh.total>0)return{base,bonusLojas,bonusRev,descErros,descAdv,descTotal,liq:bh.total,lojas,nL};
+
+  // Cálculo automático
+  const liq=Math.max(0,parseFloat((base+bonusRev+bonusLojas-descTotal).toFixed(2)));
+  return{base,bonusLojas,bonusRev,descErros,descAdv,descTotal,liq,lojas,nL};
+}
+function stOp(op,d){
+  const p=getPts(op,d),o=d.ops.find(x=>x.nome===op);
+  const metaAv=o?.metaAv||8;
+  if(p.erros>=3)return{l:'Risco alto',c:'bx-r'};
+  if(p.erros>0)return{l:'Atenção',c:'bx-y'};
+  if(p.av>=metaAv)return{l:'Destaque',c:'bx-g'};
+  return{l:'Regular',c:'bx-b'};
+}
+
+// ── NAV ────────────────────────────────────────────────────────────────────
+let charts={};
+function dc(id){if(charts[id]){charts[id].destroy();delete charts[id]}}
+function populateSel(){
+  const s=document.getElementById('sel-mes');
+  s.innerHTML=meses.map(m=>`<option value="${m.id}" ${m.id===mesAtual?'selected':''}>${m.label}</option>`).join('');
+  document.getElementById('week-lbl').textContent=semanaAtual();
+}
+function trocarMes(){mesAtual=document.getElementById('sel-mes').value;sv('cv3_cur',mesAtual);populateSel();const at=document.querySelector('.tab.active');renderTab(at?at.dataset.id:'overview')}
+function setTab(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');el.dataset.id=id;
+  document.getElementById('modal-area').style.display='none';
+  setTimeout(()=>renderTab(id),20);
+}
+function renderTab(id){
+  ({overview:renderOverview,semana:renderSemana,operadores:renderOperadores,lancar:renderLancar,bonificacao:renderBonificacao,ocorrencias:renderOcorrencias,anual:renderAnual,historico:renderHistorico,relatorio:renderRelatorio})[id]?.();
+}
+
+// ── ALERTAS AUTO ────────────────────────────────────────────────────────────
+function renderAlertas(d){
+  const riscos=d.ops.filter(o=>stOp(o.nome,d).l==='Risco alto');
+  const atenc=d.ops.filter(o=>stOp(o.nome,d).l==='Atenção');
+  let html='';
+  riscos.forEach(o=>{
+    const p=getPts(o.nome,d);
+    html+=`<div class="alert-box no-print"><strong>🚨 ${o.nome}</strong> — ${p.erros} erros acumulados este mês <span class="bx bx-r">Risco alto</span></div>`;
+  });
+  atenc.forEach(o=>{
+    const p=getPts(o.nome,d);
+    html+=`<div class="alert-box warn no-print"><strong>⚠️ ${o.nome}</strong> — ${p.erros} erro(s) este mês <span class="bx bx-y">Atenção</span></div>`;
+  });
+  document.getElementById('alertas-top').innerHTML=html;
+}
+
+// ── OVERVIEW ───────────────────────────────────────────────────────────────
+function renderOverview(){
+  const d=getD(),du=getDU(d);
+  renderAlertas(d);
+  const totalAv=d.ops.reduce((s,o)=>s+getPts(o.nome,d).av,0);
+  const totalRev=d.ops.reduce((s,o)=>s+getPts(o.nome,d).rev,0);
+  const totalLiq=d.ops.reduce((s,o)=>s+calcLiq(o.nome,d).liq,0);
+  const bonusRevTotal=totalRev*REGRAS.valorRev;
+  const riscos=d.ops.filter(o=>stOp(o.nome,d).l!=='Regular'&&stOp(o.nome,d).l!=='Destaque').length;
+  document.getElementById('kpis-ov').innerHTML=`
+    <div class="kpi"><div class="kpi-ico">⭐</div><div class="kv green">${totalAv}</div><div class="kl">Avaliações</div></div>
+    <div class="kpi"><div class="kpi-ico">🔄</div><div class="kv teal">${totalRev}</div><div class="kl">Reversões (+${brl(bonusRevTotal)})</div></div>
+    <div class="kpi"><div class="kpi-ico">⚠️</div><div class="kv ${riscos>0?'red':'blue'}">${riscos}</div><div class="kl">Alertas ativos</div></div>
+    <div class="kpi"><div class="kpi-ico">💰</div><div class="kv green" style="font-size:18px">${totalLiq>0?brl(totalLiq):'—'}</div><div class="kl">Folha do mês</div></div>`;
+  document.getElementById('du-lbl').textContent=`${du} dias úteis · -R$${REGRAS.valorErro}/erro`;
+  const sorted=[...d.ops].sort((a,b)=>calcLiq(b.nome,d).liq-calcLiq(a.nome,d).liq);
+  document.getElementById('ranking').innerHTML=sorted.map((o,i)=>{
+    const p=getPts(o.nome,d),c=calcLiq(o.nome,d),s=stOp(o.nome,d),op=d.ops.find(x=>x.nome===o.nome);
+    const metaAv=op?.metaAv||8,pct=Math.min(100,Math.round(p.av/metaAv*100));
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':`<span style="font-size:12px;font-weight:700;color:#94a3b8">${i+1}</span>`;
+    const lojasHtml=c.lojas.map(nome=>{const l=d.lojas.find(x=>x.nome===nome);const ok=l&&l.entregues>=l.meta&&l.entregues>0;return`<span class="loja-mini ${ok?'loja-ok':'loja-no'}">${ok?'✓':'○'} ${nome.split(' ')[0]}</span>`}).join('');
+    return`<div class="rank-row">
+      <div style="font-size:18px;width:28px;text-align:center;flex-shrink:0">${medal}</div>
+      <div class="rank-info">
+        <div class="rank-name">${o.nome}${o.novo?` <span class="bx bx-p" style="font-size:9px">Novo</span>`:''}</div>
+        <div class="rank-sub">⭐ ${p.av}/${metaAv} &nbsp;·&nbsp; <span style="color:#0f766e">🔄 ${p.rev} (+${brl(c.bonusRev)})</span> &nbsp;·&nbsp; <span style="color:#dc2626">🔻 ${p.erros} (-${brl(c.descErros)})</span></div>
+        <div style="margin-top:3px">${lojasHtml}</div>
+        <div class="pb-wrap"><div class="pb" style="width:${pct}%;background:${pct>=100?'#16a34a':'#3b82f6'}"></div></div>
+      </div>
+      <div style="text-align:right;flex-shrink:0"><div style="font-size:16px;font-weight:700;color:#2563eb">${c.liq>0?brl(c.liq):'—'}</div><span class="bx ${s.c}" style="margin-top:4px;display:inline-block">${s.l}</span></div>
+    </div>`;
+  }).join('');
+  document.getElementById('lojas-ov').innerHTML=d.lojas.map(l=>{
+    const ok=l.entregues>0&&l.entregues>=l.meta,p=l.entregues>0?Math.round(l.entregues/l.meta*100):null;
+    return`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:12px"><span style="font-weight:600">${l.nome}</span><span class="bx ${ok?'bx-g':'bx-b'}" style="font-size:10px">${ok?'✓ Meta':p!==null?p+'%':'—'}</span></div>`}).join('');
+  const rec=[...d.lancamentos].sort((a,b)=>b.id-a.id).slice(0,4);
+  document.getElementById('ultimos-lanc').innerHTML=rec.length?rec.map(l=>{
+    const ico=l.tipo==='Avaliação'?'⭐':l.tipo==='Reversão'?'🔄':'🔻',cls=l.tipo==='Avaliação'?'bx-g':l.tipo==='Reversão'?'bx-t':'bx-r';
+    const lbl=l.tipo==='Avaliação'?`+${l.qtd}pt`:l.tipo==='Reversão'?`+${brl(l.qtd*REGRAS.valorRev)}`:l.qtd>0?`-${l.qtd}pt`:'—';
+    return`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:16px">${ico}</span><div><div style="font-size:12px;font-weight:600">${l.op}</div><div style="font-size:10px;color:#64748b">${l.data} · ${l.motivo}</div></div></div><span class="bx ${cls}" style="font-size:11px">${lbl}</span></div>`}).join(''):`<div style="font-size:12px;color:#94a3b8;padding:8px;text-align:center">Nenhum lançamento</div>`;
+}
+
+// ── SEMANA ─────────────────────────────────────────────────────────────────
+let semanaAtiva=1;
+function renderSemana(){
+  const d=getD();
+  const sel=document.getElementById('week-sel');
+  sel.innerHTML=[1,2,3,4].map(w=>`<button class="wbtn ${semanaAtiva===w?'active':''}" onclick="semanaAtiva=${w};renderSemana()">Sem ${w}</button>`).join('');
+  const lancs=d.lancamentos.filter(l=>l.semana===semanaAtiva);
+  const errosSem=lancs.filter(l=>l.tipo==='Erro');
+  const avsSem=lancs.filter(l=>l.tipo==='Avaliação');
+  const revsSem=lancs.filter(l=>l.tipo==='Reversão');
+  document.getElementById('semana-content').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px">
+      <div class="kpi"><div class="kpi-ico">⭐</div><div class="kv green">${avsSem.reduce((s,l)=>s+l.qtd,0)}</div><div class="kl">Avaliações</div></div>
+      <div class="kpi"><div class="kpi-ico">🔄</div><div class="kv teal">${revsSem.reduce((s,l)=>s+l.qtd,0)}</div><div class="kl">Reversões</div></div>
+      <div class="kpi"><div class="kpi-ico">🔻</div><div class="kv red">${errosSem.reduce((s,l)=>s+l.qtd,0)}</div><div class="kl">Erros</div></div>
+    </div>
+    ${lancs.length?`<table><thead><tr><th style="width:11%">Data</th><th style="width:27%">Operador</th><th style="width:14%">Tipo</th><th>Motivo</th></tr></thead><tbody>${lancs.map(l=>{const ico=l.tipo==='Avaliação'?'⭐':l.tipo==='Reversão'?'🔄':'🔻';const cls=l.tipo==='Avaliação'?'bx-g':l.tipo==='Reversão'?'bx-t':'bx-r';return`<tr><td>${l.data}</td><td style="font-weight:600">${l.op}</td><td><span class="bx ${cls}" style="font-size:10px">${ico} ${l.tipo}</span></td><td style="color:#64748b">${l.motivo}</td></tr>`}).join('')}</tbody></table>`:`<div style="font-size:12px;color:#94a3b8;padding:12px;text-align:center">Nenhum lançamento nesta semana</div>`}`;
+  // Metas semanais
+  document.getElementById('semana-metas').innerHTML=d.ops.map(o=>{
+    const op=d.ops.find(x=>x.nome===o.nome);
+    const metaAv=op?.metaAv||8;
+    const avAcum=d.pontos.find(x=>x.nome===o.nome)?.av||0;
+    const pct=Math.min(100,Math.round(avAcum/metaAv*100));
+    const erros=d.pontos.find(x=>x.nome===o.nome)?.erros||0;
+    return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f1f5f9">
+      <div style="min-width:130px;font-size:12px;font-weight:600">${o.nome.split(' ')[0]}</div>
+      <div style="flex:1">
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px"><span style="color:#64748b">Meta: ${metaAv} aval.</span><span style="font-weight:600;color:${pct>=100?'#16a34a':'#2563eb'}">${avAcum}/${metaAv} (${pct}%)</span></div>
+        <div class="pb-wrap"><div class="pb" style="width:${pct}%;background:${pct>=100?'#16a34a':'#3b82f6'}"></div></div>
+      </div>
+      ${erros>0?`<span class="bx bx-r" style="font-size:10px">🔻 ${erros} erros</span>`:`<span class="bx bx-g" style="font-size:10px">Sem erros</span>`}
+    </div>`;}).join('');
+}
+
+// ── OPERADORES ─────────────────────────────────────────────────────────────
+function renderOperadores(){
+  const d=getD();
+  document.getElementById('tab-ops').innerHTML=d.ops.map((o,i)=>{
+    const p=getPts(o.nome,d),c=calcLiq(o.nome,d),s=stOp(o.nome,d);
+    const metaAv=o.metaAv||8,pct=Math.min(100,Math.round(p.av/metaAv*100));
+    return`<tr>
+      <td style="font-weight:600;font-size:12px">${o.nome}${o.novo?` <span class="bx bx-p" style="font-size:9px">Novo</span>`:''}</td>
+      <td style="font-size:11px;color:#64748b">${o.setor}</td>
+      <td style="color:#16a34a;font-weight:700">${p.av}</td>
+      <td style="color:#0f766e;font-weight:700">${p.rev}${p.rev>0?` <span style="font-size:10px">(+${brl(c.bonusRev)})</span>`:''}</td>
+      <td style="color:#dc2626;font-weight:700">${p.erros}</td>
+      <td style="font-size:11px"><input class="ei sm" type="number" value="${metaAv}" onchange="updMetaAv(${i},this.value)" style="width:45px"/></td>
+      <td><div style="font-size:10px;color:#64748b;margin-bottom:2px">${p.av}/${metaAv}</div><div class="pb-wrap"><div class="pb" style="width:${pct}%;background:${pct>=100?'#16a34a':'#3b82f6'}"></div></div></td>
+      <td style="font-weight:700;font-size:13px;color:#2563eb">${c.liq>0?brl(c.liq):'—'}</td>
+      <td><span class="bx ${s.c}">${s.l}</span></td>
+      <td><button class="btn btn-r" onclick="remOp(${i},'${o.nome.replace(/'/g,"\\'")}')">🗑</button></td>
+    </tr>`;
+  }).join('');
+  // Lojas por operador
+  document.getElementById('lojas-por-op').innerHTML=d.ops.map(o=>{
+    const lojas=getLojasOp(o.nome,d);
+    return`<div style="display:flex;align-items:center;gap:6px;padding:7px 0;border-bottom:1px solid #f1f5f9;flex-wrap:wrap">
+      <span style="font-size:12px;font-weight:600;min-width:100px">${o.nome.split(' ')[0]}</span>
+      ${lojas.length?lojas.map(loja=>{const l=d.lojas.find(x=>x.nome===loja);const ok=l&&l.entregues>=l.meta&&l.entregues>0;return`<span class="loja-mini ${ok?'loja-ok':'loja-no'}">${ok?'✓':'○'} ${loja.split(' ')[0]}</span>`}).join(''):`<span style="font-size:11px;color:#94a3b8">Sem loja</span>`}
+    </div>`;}).join('');
+  const dest=d.ops.filter(o=>stOp(o.nome,d).l==='Destaque').length;
+  const reg=d.ops.filter(o=>stOp(o.nome,d).l==='Regular').length;
+  const at=d.ops.filter(o=>stOp(o.nome,d).l==='Atenção').length;
+  const ri=d.ops.filter(o=>stOp(o.nome,d).l==='Risco alto').length;
+  document.getElementById('desemp-geral').innerHTML=`
+    <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:12px"><span><span class="bx bx-g">Destaque</span></span><span style="font-weight:700">${dest}</span></div>
+    <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:12px"><span><span class="bx bx-b">Regular</span></span><span style="font-weight:700">${reg}</span></div>
+    <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:12px"><span><span class="bx bx-y">Atenção</span></span><span style="font-weight:700">${at}</span></div>
+    <div style="display:flex;justify-content:space-between;padding:7px 0;font-size:12px"><span><span class="bx bx-r">Risco alto</span></span><span style="font-weight:700">${ri}</span></div>`;
+}
+function updMetaAv(i,v){const d=getD();d.ops[i].metaAv=parseInt(v)||8;salvarSilent();renderOperadores()}
+function remOp(i,nome){
+  if(!confirm(`Remover "${nome}"?`))return;
+  const d=getD();d.ops.splice(i,1);d.pontos=d.pontos.filter(p=>p.nome!==nome);
+  salvarMes();renderOperadores();renderOverview();
+}
+
+// ── LANÇAR ─────────────────────────────────────────────────────────────────
+function renderLancar(){
+  const d=getD();
+  document.getElementById('hist-lanc').innerHTML=[...d.lancamentos].sort((a,b)=>b.id-a.id).map(l=>{
+    const ico=l.tipo==='Avaliação'?'⭐':l.tipo==='Reversão'?'🔄':'🔻',cls=l.tipo==='Avaliação'?'bx-g':l.tipo==='Reversão'?'bx-t':'bx-r';
+    const lbl=l.tipo==='Avaliação'?`+${l.qtd}pt`:l.tipo==='Reversão'?`+${brl(l.qtd*REGRAS.valorRev)}`:l.qtd>0?`-${l.qtd}pt`:'—';
+    return`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9">
+      <div style="display:flex;align-items:center;gap:9px"><span style="font-size:16px">${ico}</span><div><div style="font-size:12px;font-weight:600">${l.op}</div><div style="font-size:11px;color:#64748b">${l.data} · ${l.motivo}</div></div></div>
+      <div style="display:flex;align-items:center;gap:7px"><span class="bx ${cls}" style="font-size:11px">${lbl}</span><button class="btn btn-r" onclick="delLanc(${l.id})">🗑</button></div>
+    </div>`}).join('')||`<div style="font-size:12px;color:#94a3b8;padding:12px;text-align:center">Nenhum lançamento</div>`;
+}
+function delLanc(id){
+  const d=getD();
+  const l=d.lancamentos.find(x=>x.id===id);
+  if(l){let p=d.pontos.find(x=>x.nome===l.op);if(p){if(l.tipo==='Avaliação')p.av=Math.max(0,p.av-l.qtd);else if(l.tipo==='Erro')p.erros=Math.max(0,p.erros-l.qtd);else if(l.tipo==='Reversão')p.rev=Math.max(0,p.rev-l.qtd);}}
+  d.lancamentos=d.lancamentos.filter(x=>x.id!==id);
+  salvarSilent();renderLancar();renderOverview();
+}
+
+// ── BONIFICAÇÃO ─────────────────────────────────────────────────────────────
+function renderBonificacao(){
+  const d=getD(),du=getDU(d);
+  document.getElementById('regras-info').innerHTML=
+    `<strong>Regras — ${d.label} · ${du} dias úteis</strong><br/>
+    Base: <strong>R$150 × nº de lojas atendidas</strong> (R$75 rotina + R$75 atendimento por loja)
+    &nbsp;·&nbsp; <span style="color:#16a34a">Loja na meta = <strong>+R$150/loja</strong></span>
+    &nbsp;·&nbsp; <span style="color:#0f766e">Reversão = <strong>+R$2,50</strong></span>
+    &nbsp;·&nbsp; <span style="color:#dc2626">Erro = <strong>-R$2,88</strong></span>
+    &nbsp;·&nbsp; <span style="color:#dc2626">ADV verbal = <strong>-25% (grave -50% / gravíssima -100%)</strong></span>
+    &nbsp;·&nbsp; <span style="color:#dc2626">ADV escrita = <strong>-50% (grave -75% / gravíssima -100%)</strong></span>`;
+  const total=d.ops.reduce((s,o)=>s+calcLiq(o.nome,d).liq,0);
+  document.getElementById('tab-bon').innerHTML=d.ops.map((o,i)=>{
+    const p=getPts(o.nome,d),c=calcLiq(o.nome,d),s=stOp(o.nome,d);
+    const lojasHtml=c.lojas.map(nome=>{const l=d.lojas.find(x=>x.nome===nome);const ok=l&&l.entregues>=l.meta&&l.entregues>0;return`<span class="loja-mini ${ok?'loja-ok':'loja-no'}">${ok?'✓':'○'} ${nome.split(' ')[0]}</span>`}).join('');
+    return`<tr>
+      <td style="font-weight:600;font-size:12px">${o.nome}</td>
+      <td style="font-size:12px;font-weight:700;color:#2563eb">${brl(c.base)}<div style="font-size:10px;color:#64748b;font-weight:400">${c.nL} loja${c.nL>1?'s':''}</div></td>
+      <td style="font-size:11px">${lojasHtml}${c.bonusLojas>0?`<div style="font-size:11px;font-weight:700;color:#16a34a;margin-top:2px">+${brl(c.bonusLojas)}</div>`:''}</td>
+      <td style="color:#0f766e;font-weight:700">${p.rev>0?'+'+brl(c.bonusRev):'—'}</td>
+      <td style="color:${c.descErros>0?'#dc2626':'#94a3b8'};font-weight:600">${c.descErros>0?'-'+brl(c.descErros):'—'}</td>
+      <td style="color:${(c.descAdv||0)>0?'#dc2626':'#94a3b8'};font-weight:600">${(c.descAdv||0)>0?'-'+brl(c.descAdv):'—'}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+          <span id="liq-val-${i}" style="font-weight:700;font-size:14px;color:${c.zerado?'#94a3b8':c.manual?'#7c3aed':c.liq>0?'#2563eb':'#94a3b8'}">${c.zerado?'R$ 0,00':c.liq>0?brl(c.liq):'—'}${c.manual?' <span style="font-size:9px;background:#ede9fe;color:#6d28d9;padding:1px 5px;border-radius:4px">manual</span>':''}${c.zerado?' <span style="font-size:9px;background:#fee2e2;color:#b91c1c;padding:1px 5px;border-radius:4px">zerado</span>':''}</span>
+          <button onclick="toggleEditLiq(${i},'${o.nome.replace(/'/g,"\\'")}',${c.liq})" title="Editar valor" style="font-size:11px;padding:2px 6px;cursor:pointer;border:1.5px solid #bfdbfe;border-radius:6px;background:#eff6ff;color:#1d4ed8;font-weight:600">✏️</button>
+          <button onclick="zerarOp(${i},'${o.nome.replace(/'/g,"\\'")}')" title="Zerar bonificação" style="font-size:11px;padding:2px 6px;cursor:pointer;border:1.5px solid #fca5a5;border-radius:6px;background:#fee2e2;color:#b91c1c;font-weight:600">✕ Zerar</button>
+          ${(c.manual||c.zerado)?`<button onclick="restaurarOp(${i})" title="Restaurar automático" style="font-size:11px;padding:2px 6px;cursor:pointer;border:1.5px solid #86efac;border-radius:6px;background:#f0fdf4;color:#15803d;font-weight:600">↺ Auto</button>`:''}
+        </div>
+        <div id="liq-edit-${i}" style="display:none;margin-top:5px">
+          <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
+            <input type="number" step="0.01" id="liq-inp-${i}" style="width:95px;font-size:12px;padding:4px 7px;border:1.5px solid #3b82f6;border-radius:6px" placeholder="0,00"/>
+            <button onclick="salvarLiqManual(${i},'${o.nome.replace(/'/g,"\\'")}')" style="font-size:11px;padding:3px 8px;cursor:pointer;background:#16a34a;color:#fff;border:none;border-radius:6px;font-weight:600">✓</button>
+            <button onclick="cancelarEditLiq(${i})" style="font-size:11px;padding:3px 7px;cursor:pointer;background:#fee2e2;color:#b91c1c;border:none;border-radius:6px;font-weight:600">✕</button>
+          </div>
+        </div>
+      </td>
+      <td><span class="bx ${s.c}">${s.l}</span></td>
+      <td><button class="btn" style="font-size:11px;padding:3px 9px" onclick="showModal('editop',${i})">✏️</button></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('bon-total').textContent=total>0?brl(total):'Aguardando';
+  document.getElementById('lojas-bon').innerHTML=d.lojas.map((l,i)=>{
+    const ok=l.entregues>0&&l.entregues>=l.meta,p=l.entregues>0?Math.round(l.entregues/l.meta*100):null;
+    return`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;flex-wrap:wrap;gap:6px">
+      <div style="display:flex;align-items:center;gap:9px">
+        <span style="font-size:16px">${ok?'✅':'🔲'}</span>
+        <div><div style="font-size:13px;font-weight:600">${l.nome}</div>
+        <div style="font-size:11px;color:#64748b">Meta: ${l.meta.toLocaleString('pt-BR')} · Entregues: <input class="ei" type="number" value="${l.entregues||''}" placeholder="0" style="width:75px;font-size:11px;padding:2px 6px" onchange="updLoja(${i},this.value)"/></div></div>
+      </div>
+      <span class="bx ${ok?'bx-g':'bx-b'}" style="font-size:11px">${ok?`✓ +R$${REGRAS.bonusPorLoja}/op`:p!==null?p+'%':'Aguardando'}</span>
+    </div>`;}).join('');
+  document.getElementById('obs-lista').innerHTML=(d.observacoes||[]).length?(d.observacoes||[]).map(o=>`<div style="display:flex;gap:7px;padding:5px 0;border-bottom:1px solid #f1f5f9;font-size:12px"><span style="color:#3b82f6;font-weight:700">·</span><span>${o}</span></div>`).join(''):`<div style="font-size:12px;color:#94a3b8">Sem observações</div>`;
+}
+function updLoja(i,v){const d=getD();d.lojas[i].entregues=parseFloat(v)||0;salvarSilent();renderBonificacao();renderOverview()}
+
+// ── OCORRÊNCIAS ─────────────────────────────────────────────────────────────
+function renderOcorrencias(){
+  const d=getD();
+  document.getElementById('tab-ocs').innerHTML=(d.ocorrencias||[]).length
+    ?[...(d.ocorrencias||[])].sort((a,b)=>a.data.localeCompare(b.data)).map(o=>`<tr>
+      <td style="color:#64748b">${o.data}</td><td style="font-weight:600">${o.op}</td>
+      <td>${o.motivo}</td><td><span class="bx ${o.adv&&o.adv!=='—'?'bx-r':'bx-b'}" style="font-size:10px">${o.adv||'—'}</span></td>
+      <td><button class="btn btn-r" onclick="delOc(${o.id})">🗑</button></td>
+    </tr>`).join('')
+    :`<tr><td colspan="5" style="text-align:center;color:#94a3b8;padding:14px">Sem ocorrências</td></tr>`;
+}
+function delOc(id){const d=getD();d.ocorrencias=d.ocorrencias.filter(o=>o.id!==id);salvarSilent();renderOcorrencias()}
+
+// ── ANUAL ──────────────────────────────────────────────────────────────────
+function renderAnual(){
+  const opsSet=[...new Set(meses.flatMap(m=>m.ops.map(o=>o.nome)))];
+  const totalPorOp=opsSet.map(op=>({
+    op,
+    av:meses.reduce((s,m)=>s+(m.pontos.find(x=>x.nome===op)?.av||0),0),
+    rev:meses.reduce((s,m)=>s+(m.pontos.find(x=>x.nome===op)?.rev||0),0),
+    erros:meses.reduce((s,m)=>s+(m.pontos.find(x=>x.nome===op)?.erros||0),0),
+    liq:meses.reduce((s,m)=>{const c=calcLiq(op,m);return s+(c.liq||0)},0)
+  })).filter(x=>x.av>0||x.liq>0).sort((a,b)=>b.liq-a.liq);
+  const totalAnual=totalPorOp.reduce((s,x)=>s+x.liq,0);
+  const totalAv=totalPorOp.reduce((s,x)=>s+x.av,0);
+  const totalOcs=meses.reduce((s,m)=>s+(m.ocorrencias||[]).length,0);
+  document.getElementById('kpis-anual').innerHTML=`
+    <div class="kpi"><div class="kpi-ico">📅</div><div class="kv blue">${meses.length}</div><div class="kl">Meses</div></div>
+    <div class="kpi"><div class="kpi-ico">⭐</div><div class="kv green">${totalAv}</div><div class="kl">Avaliações total</div></div>
+    <div class="kpi"><div class="kpi-ico">⚠️</div><div class="kv amber">${totalOcs}</div><div class="kl">Ocorrências total</div></div>
+    <div class="kpi"><div class="kpi-ico">💰</div><div class="kv green" style="font-size:16px">${brl(totalAnual)}</div><div class="kl">Total pago no ano</div></div>`;
+  document.getElementById('rank-anual').innerHTML=totalPorOp.map((x,i)=>{
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}.`;
+    return`<div class="rank-row">
+      <div style="font-size:16px;width:26px;text-align:center;flex-shrink:0">${medal}</div>
+      <div class="rank-info">
+        <div class="rank-name" style="font-size:13px">${x.op.split(' ')[0]} ${x.op.split(' ')[1]||''}</div>
+        <div class="rank-sub">⭐ ${x.av} aval · 🔄 ${x.rev} rev · 🔻 ${x.erros} erros</div>
+        <div class="pb-wrap"><div class="pb" style="width:${Math.min(100,Math.round(x.liq/Math.max(...totalPorOp.map(y=>y.liq))*100))}%;background:#3b82f6"></div></div>
+      </div>
+      <div style="text-align:right;flex-shrink:0"><div style="font-size:14px;font-weight:700;color:#2563eb">${brl(x.liq)}</div></div>
+    </div>`;}).join('');
+  // Podium avaliações
+  const top3=[...totalPorOp].sort((a,b)=>b.av-a.av).slice(0,3);
+  const maxAv=Math.max(...top3.map(x=>x.av),1);
+  const ordem=[top3[1],top3[0],top3[2]].filter(Boolean);
+  const alturas=[70,100,50];
+  document.getElementById('podium').innerHTML=ordem.map((x,i)=>`
+    <div class="pod-col">
+      <div class="pod-val">${x?.av||0}</div>
+      <div class="pod-bar" style="height:${alturas[i]}px;background:${i===1?'#2563eb':i===0?'#94a3b8':'#ca8a04'}"></div>
+      <div class="pod-label">${x?.op.split(' ')[0]||''}</div>
+    </div>`).join('');
+  // Detalhe
+  document.getElementById('rank-anual-detalhe').innerHTML=`<div style="margin-top:10px;border-top:1px solid #f1f5f9;padding-top:10px">`+
+    totalPorOp.map(x=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f1f5f9;font-size:12px"><span style="font-weight:600">${x.op.split(' ')[0]}</span><span style="color:#16a34a;font-weight:700">⭐ ${x.av}</span></div>`).join('')+`</div>`;
+  // Gráfico linhas histórico
+  dc('chart-linhas');
+  const colors=['#2563eb','#16a34a','#dc2626','#d97706','#7c3aed','#0f766e'];
+  const opsTop=opsSet.filter(op=>meses.some(m=>calcLiq(op,m).liq>0)).slice(0,5);
+  charts['chart-linhas']=new Chart(document.getElementById('chart-linhas'),{
+    type:'line',
+    data:{labels:meses.map(m=>m.label.split(' ')[0]),datasets:opsTop.map((op,i)=>({label:op.split(' ')[0],data:meses.map(m=>calcLiq(op,m).liq),borderColor:colors[i%colors.length],backgroundColor:colors[i%colors.length]+'15',tension:.3,pointRadius:4,fill:false}))},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:12}}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#94a3b8'}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#94a3b8',callback:v=>v>0?'R$'+Math.round(v):0}}}}
+  });
+}
+
+// ── HISTÓRICO ──────────────────────────────────────────────────────────────
+function renderHistorico(){
+  const tTotal=meses.reduce((s,m)=>s+m.ops.reduce((ss,o)=>ss+calcLiq(o.nome,m).liq,0),0);
+  document.getElementById('kpis-hist').innerHTML=`
+    <div class="kpi"><div class="kpi-ico">📅</div><div class="kv blue">${meses.length}</div><div class="kl">Meses</div></div>
+    <div class="kpi"><div class="kpi-ico">⭐</div><div class="kv green">${meses.reduce((s,m)=>s+m.ops.reduce((ss,o)=>ss+(m.pontos.find(x=>x.nome===o.nome)?.av||0),0),0)}</div><div class="kl">Total avaliações</div></div>
+    <div class="kpi"><div class="kpi-ico">⚠️</div><div class="kv amber">${meses.reduce((s,m)=>s+(m.ocorrencias||[]).length,0)}</div><div class="kl">Total ocorrências</div></div>
+    <div class="kpi"><div class="kpi-ico">💰</div><div class="kv green" style="font-size:16px">${brl(tTotal)}</div><div class="kl">Total pago</div></div>`;
+  document.getElementById('hist-lista').innerHTML=meses.map(m=>{
+    const tl=m.ops.reduce((s,o)=>s+calcLiq(o.nome,m).liq,0);
+    const av=m.ops.reduce((s,o)=>s+(m.pontos.find(x=>x.nome===o.nome)?.av||0),0);
+    return`<div style="border:1.5px solid ${m.id===mesAtual?'#2563eb':'#e2eaf8'};border-radius:10px;padding:10px 14px;margin-bottom:8px;cursor:pointer;background:${m.id===mesAtual?'#eff6ff':'transparent'}" onclick="document.getElementById('sel-mes').value='${m.id}';trocarMes()">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;font-weight:700">${m.label}</span><span class="bx bx-b" style="font-size:10px">${getDU(m)} dias</span></div>
+      <div style="display:flex;gap:14px;font-size:11px;color:#64748b"><span>⭐ ${av}</span><span>⚠️ ${(m.ocorrencias||[]).length}</span><span style="color:#16a34a;font-weight:600">${tl>0?brl(tl):'—'}</span></div>
+    </div>`;}).join('');
+  dc('chart-hist');dc('chart-av');
+  charts['chart-hist']=new Chart(document.getElementById('chart-hist'),{type:'bar',data:{labels:meses.map(m=>m.label.split(' ')[0]),datasets:[{label:'Folha',data:meses.map(m=>m.ops.reduce((s,o)=>s+calcLiq(o.nome,m).liq,0)),backgroundColor:'#3b82f6',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>brl(ctx.raw)}}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#94a3b8'}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#94a3b8',callback:v=>v>0?'R$'+Math.round(v):0}}}}});
+  const opsSet=[...new Set(meses.flatMap(m=>m.ops.map(o=>o.nome)))].slice(0,5);
+  const colors=['#16a34a','#2563eb','#dc2626','#d97706','#7c3aed'];
+  charts['chart-av']=new Chart(document.getElementById('chart-av'),{type:'line',data:{labels:meses.map(m=>m.label.split(' ')[0]),datasets:opsSet.map((op,i)=>({label:op.split(' ')[0],data:meses.map(m=>m.pontos.find(x=>x.nome===op)?.av||0),borderColor:colors[i%colors.length],backgroundColor:colors[i%colors.length]+'15',tension:.3,pointRadius:4,fill:false}))},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10},boxWidth:12}}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#94a3b8'}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#94a3b8',stepSize:2}}}}});
+}
+
+// ── MODAIS ─────────────────────────────────────────────────────────────────
+let mtype='',mExtra=null;
+function showModal(t,extra){
+  mtype=t;mExtra=extra;
+  const d=getD();
+  const titles={'op':'Novo operador','pts-pos':'Lançar avaliação ⭐','pts-rev':'Lançar reversão 🔄','pts-neg':'Lançar erro 🔻','oc':'Nova ocorrência','novoMes':'Criar novo mês','obs':'Observações','editop':'Editar operador','editlojas':'Editar lojas por operador'};
+  document.getElementById('modal-title').textContent=titles[t]||t;
+  const mc=document.getElementById('modal-content');
+  const opOpts=d.ops.map(o=>`<option value="${o.nome}">${o.nome}</option>`).join('');
+  const hj=hoje();
+  if(t==='op'){
+    mc.innerHTML=`
+      <div class="fr"><label>Nome completo</label><input type="text" id="m-nome"/></div>
+      <div class="fr"><label>Setor</label><select id="m-setor"><option value="">Selecione</option>${SETORES.map(s=>`<option>${s}</option>`).join('')}</select></div>
+      <div class="fr"><label>Meta de avaliações</label><input type="number" id="m-metaav" value="8" min="1"/></div>`;
+  } else if(t==='pts-pos'){
+    mc.innerHTML=`
+      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:8px 11px;margin-bottom:10px;font-size:12px;color:#15803d;font-weight:600">⭐ +1 ponto por avaliação</div>
+      <div class="fr"><label>Data</label><input type="text" id="m-data" value="${hj}"/></div>
+      <div class="fr"><label>Operador</label><select id="m-op"><option value="">Selecione</option>${opOpts}</select></div>
+      <div class="fr"><label>Quantidade</label><input type="number" id="m-qtd" value="1" min="1"/></div>
+      <div class="fr"><label>Semana</label><select id="m-sem"><option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option></select></div>
+      <div class="fr"><label>Observação</label><textarea id="m-motivo"></textarea></div>`;
+  } else if(t==='pts-rev'){
+    mc.innerHTML=`
+      <div style="background:#f0fdfa;border:1.5px solid #99f6e4;border-radius:8px;padding:8px 11px;margin-bottom:10px;font-size:12px;color:#0f766e;font-weight:600">🔄 +R$2,50 por reversão</div>
+      <div class="fr"><label>Data</label><input type="text" id="m-data" value="${hj}"/></div>
+      <div class="fr"><label>Operador</label><select id="m-op"><option value="">Selecione</option>${opOpts}</select></div>
+      <div class="fr"><label>Quantidade</label><input type="number" id="m-qtd" value="1" min="1"/></div>
+      <div class="fr"><label>Semana</label><select id="m-sem"><option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option></select></div>
+      <div class="fr"><label>Motivo</label><textarea id="m-motivo"></textarea></div>`;
+  } else if(t==='pts-neg'){
+    mc.innerHTML=`
+      <div style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;padding:8px 11px;margin-bottom:10px;font-size:12px;color:#b91c1c;font-weight:600">🔻 -R$2,88 por erro</div>
+      <div class="fr"><label>Data</label><input type="text" id="m-data" value="${hj}"/></div>
+      <div class="fr"><label>Operador</label><select id="m-op"><option value="">Selecione</option>${opOpts}</select></div>
+      <div class="fr"><label>Quantidade</label><input type="number" id="m-qtd" value="1" min="1"/></div>
+      <div class="fr"><label>Semana</label><select id="m-sem"><option value="1">Semana 1</option><option value="2">Semana 2</option><option value="3">Semana 3</option><option value="4">Semana 4</option></select></div>
+      <div class="fr"><label>Motivo</label><textarea id="m-motivo"></textarea></div>`;
+  } else if(t==='oc'){
+    mc.innerHTML=`
+      <div class="fr"><label>Data</label><input type="text" id="m-data" value="${hj}"/></div>
+      <div class="fr"><label>Operador</label><select id="m-op"><option value="">Selecione</option>${opOpts}</select></div>
+      <div class="fr"><label>Motivo</label><textarea id="m-motivo"></textarea></div>
+      <div class="fr"><label>ADV aplicada?</label><select id="m-adv"><option value="—">Não</option><option>ADV verbal</option><option>ADV escrita</option><option>25%</option><option>50%</option><option>100%</option></select></div>`;
+  } else if(t==='novoMes'){
+    mc.innerHTML=`
+      <div class="fr"><label>Nome (ex: Junho 2026)</label><input type="text" id="m-label"/></div>
+      <div class="fr"><label>Ano</label><input type="number" id="m-ano" value="2026"/></div>
+      <div class="fr"><label>Mês (1=jan … 12=dez)</label><input type="number" id="m-mes" value="${new Date().getMonth()+2}" min="1" max="12"/></div>
+      <div class="fr"><label>Copiar operadores de</label><select id="m-copiar">${meses.map(m=>`<option value="${m.id}">${m.label}</option>`).join('')}</select></div>
+      <p style="font-size:11px;color:#64748b;margin-top:4px">Pontos, lançamentos e ocorrências serão zerados.</p>`;
+  } else if(t==='obs'){
+    mc.innerHTML=`<div class="fr"><label>Uma por linha</label><textarea id="m-obs-text" style="min-height:90px">${(d.observacoes||[]).join('\n')}</textarea></div>`;
+  } else if(t==='editop'){
+    const i=mExtra,o=d.ops[i]||{};
+    mc.innerHTML=`
+      <div class="fr"><label>Nome</label><input type="text" id="m-nome" value="${o.nome||''}"/></div>
+      <div class="fr"><label>Setor</label><input type="text" id="m-setor" value="${o.setor||''}"/></div>
+      <div class="fr"><label>Meta de avaliações</label><input type="number" id="m-metaav" value="${o.metaAv||8}" min="1"/></div>
+      <div class="fr"><label>Avaliações</label><input type="number" id="m-av" value="${(d.pontos.find(x=>x.nome===o.nome)||{av:0}).av}"/></div>
+      <div class="fr"><label>Reversões</label><input type="number" id="m-rev" value="${(d.pontos.find(x=>x.nome===o.nome)||{rev:0}).rev}"/></div>
+      <div class="fr"><label>Erros</label><input type="number" id="m-erros" value="${(d.pontos.find(x=>x.nome===o.nome)||{erros:0}).erros}"/></div>
+      <div class="fr"><label>Valor líquido manual (deixe 0 para calcular automático)</label><input type="number" step="0.01" id="m-liqmanual" value="${o._liqManual||0}" placeholder="0,00"/></div>
+      ${o._liqManual>0?'<div style="font-size:11px;color:#7c3aed;font-weight:600;margin-bottom:6px">⚠️ Valor manual ativo: '+brl(o._liqManual)+' — coloque 0 para voltar ao automático</div>':''}`;
+  } else if(t==='editlojas'){
+    mc.innerHTML=`<div id="editlojas-list">`+d.ops.map((o,i)=>{
+      const lojas=getLojasOp(o.nome,d);
+      return`<div style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f1f5f9">
+        <div style="font-size:12px;font-weight:600;margin-bottom:5px">${o.nome}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">
+          ${LOJAS_BASE.map(l=>`<label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer;padding:2px 6px;border-radius:6px;border:1px solid #e2eaf8;background:${lojas.includes(l)?'#dcfce7':'#f9fafb'}">
+            <input type="checkbox" data-op="${o.nome}" data-loja="${l}" ${lojas.includes(l)?'checked':''} onchange="toggleLojaOp(this)"/> ${l.split(' ')[0]}
+          </label>`).join('')}
+        </div>
+      </div>`}).join('')+`</div>`;
+  }
+  document.getElementById('modal-area').style.display='flex';
+}
+function closeModal(){document.getElementById('modal-area').style.display='none'}
+
+function toggleLojaOp(el){
+  const d=getD();const op=el.dataset.op,loja=el.dataset.loja;
+  if(!LOJAS_POR_OP[d.id])LOJAS_POR_OP[d.id]={};
+  const mapa=LOJAS_POR_OP[d.id];
+  if(!mapa[op])mapa[op]=[];
+  if(el.checked){if(!mapa[op].includes(loja))mapa[op].push(loja);}
+  else{mapa[op]=mapa[op].filter(x=>x!==loja);}
+  el.closest('label').style.background=el.checked?'#dcfce7':'#f9fafb';
+}
+
+document.getElementById('msave').onclick=function(){
+  const d=getD();
+  if(mtype==='op'){
+    const nome=document.getElementById('m-nome').value.trim(),setor=document.getElementById('m-setor').value;
+    if(!nome||!setor)return alert('Preencha nome e setor');
+    d.ops.push({nome,setor,metaAv:parseInt(document.getElementById('m-metaav').value)||8,novo:true});
+    d.pontos.push({nome,av:0,erros:0,rev:0});
+    salvarMes();closeModal();renderOperadores();renderOverview();
+  } else if(['pts-pos','pts-rev','pts-neg'].includes(mtype)){
+    const op=document.getElementById('m-op').value;if(!op)return alert('Selecione');
+    const tipo=mtype==='pts-pos'?'Avaliação':mtype==='pts-rev'?'Reversão':'Erro';
+    const qtd=parseInt(document.getElementById('m-qtd').value)||1;
+    const semana=parseInt(document.getElementById('m-sem').value)||1;
+    const motivo=document.getElementById('m-motivo').value||tipo;
+    d.lancamentos.push({id:nid++,data:document.getElementById('m-data').value,op,tipo,qtd,semana,motivo});
+    let p=d.pontos.find(x=>x.nome===op);if(!p){p={nome:op,av:0,erros:0,rev:0};d.pontos.push(p)}
+    if(tipo==='Avaliação')p.av+=qtd;else if(tipo==='Reversão')p.rev+=qtd;else p.erros+=qtd;
+    const bh=d.bonificacao?.find(x=>x.nome===op);if(bh)bh.total=0;
+    salvarMes();closeModal();renderOverview();
+  } else if(mtype==='oc'){
+    const op=document.getElementById('m-op').value;if(!op)return alert('Selecione');
+    d.ocorrencias=d.ocorrencias||[];
+    d.ocorrencias.push({id:nid++,data:document.getElementById('m-data').value,op,motivo:document.getElementById('m-motivo').value||'',adv:document.getElementById('m-adv').value});
+    salvarMes();closeModal();renderOcorrencias();
+  } else if(mtype==='novoMes'){
+    const label=document.getElementById('m-label').value.trim();if(!label)return alert('Informe o nome');
+    const ano=parseInt(document.getElementById('m-ano').value),mes=parseInt(document.getElementById('m-mes').value)-1;
+    const base=getMes(document.getElementById('m-copiar').value);
+    const idNovo=`${ano}-${String(mes+1).padStart(2,'0')}`;
+    if(meses.find(m=>m.id===idNovo))return alert('Este mês já existe');
+    meses.push({id:idNovo,label,ano,mes,
+      ops:base.ops.map(o=>({...o,novo:false})),
+      pontos:base.ops.map(o=>({nome:o.nome,av:0,erros:0,rev:0})),
+      lancamentos:[],ocorrencias:[],
+      bonificacao:[],
+      lojas:LOJAS_BASE.map(n=>({nome:n,meta:0,entregues:0})),
+      observacoes:[]
+    });
+    if(!LOJAS_POR_OP[idNovo]&&LOJAS_POR_OP[base.id])LOJAS_POR_OP[idNovo]={...LOJAS_POR_OP[base.id]};
+    mesAtual=idNovo;saveAll();populateSel();document.getElementById('sel-mes').value=idNovo;
+    closeModal();renderOverview();showBanner();
+  } else if(mtype==='obs'){
+    d.observacoes=document.getElementById('m-obs-text').value.split('\n').map(s=>s.trim()).filter(Boolean);
+    salvarMes();closeModal();renderBonificacao();
+  } else if(mtype==='editop'){
+    const i=mExtra,o=d.ops[i];if(!o)return;
+    o.nome=document.getElementById('m-nome').value.trim()||o.nome;
+    o.setor=document.getElementById('m-setor').value||o.setor;
+    o.metaAv=parseInt(document.getElementById('m-metaav').value)||8;
+    let p=d.pontos.find(x=>x.nome===o.nome)||{nome:o.nome,av:0,erros:0,rev:0};
+    p.av=parseInt(document.getElementById('m-av').value)||0;
+    p.rev=parseInt(document.getElementById('m-rev').value)||0;
+    p.erros=parseInt(document.getElementById('m-erros').value)||0;
+    if(!d.pontos.find(x=>x.nome===o.nome))d.pontos.push(p);
+    // salva valor manual
+    const liqMan=parseFloat(document.getElementById('m-liqmanual').value)||0;
+    o._liqManual=liqMan;
+    const bh=d.bonificacao?.find(x=>x.nome===o.nome);
+    if(bh){bh.total=liqMan>0?liqMan:0;}
+    salvarMes();closeModal();renderBonificacao();renderOperadores();renderOverview();
+  } else if(mtype==='editlojas'){
+    salvarMes();closeModal();renderOperadores();renderBonificacao();renderOverview();
+  }
+};
+
+// ── SALVAR / EXPORTAR ──────────────────────────────────────────────────────
+function toggleEditLiq(i,nome,liqAtual){
+  const editDiv=document.getElementById('liq-edit-'+i);
+  if(!editDiv)return;
+  const isOpen=editDiv.style.display==='flex';
+  if(isOpen){editDiv.style.display='none';}
+  else{
+    editDiv.style.display='flex';
+    editDiv.style.alignItems='center';
+    editDiv.style.gap='4px';
+    editDiv.style.marginTop='4px';
+    editDiv.style.flexWrap='wrap';
+    const inp=document.getElementById('liq-inp-'+i);
+    if(inp){inp.value=liqAtual>0?liqAtual.toFixed(2):'';inp.focus();}
+  }
+}
+
+function salvarLiqManual(i,nome){
+  const inp=document.getElementById('liq-inp-'+i);
+  if(!inp)return;
+  const val=parseFloat(inp.value)||0;
+  const d=getD();
+  const op=d.ops[i];
+  if(!op)return;
+  op._liqManual=val;
+  let bh=d.bonificacao?.find(x=>x.nome===op.nome);
+  if(!bh){d.bonificacao=d.bonificacao||[];d.bonificacao.push({nome:op.nome,valRotina:op.valRotina||75,valAtend:op.valAtend||75,total:val});}
+  else{bh.total=val;}
+  salvarMes();
+  const span=document.getElementById('liq-val-'+i);
+  if(span&&val>0){
+    span.textContent='R$ '+val.toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+    span.style.color='#7c3aed';
+    span.title='Valor editado manualmente';
+  }
+  const editDiv=document.getElementById('liq-edit-'+i);
+  if(editDiv)editDiv.style.display='none';
+}
+
+function cancelarEditLiq(i){
+  const editDiv=document.getElementById('liq-edit-'+i);
+  if(editDiv)editDiv.style.display='none';
+}
+
+function limparLiqManual(i){
+  const d=getD();
+  const op=d.ops[i];
+  if(!op)return;
+  op._liqManual=0;
+  const bh=d.bonificacao?.find(x=>x.nome===op.nome);
+  if(bh)bh.total=0;
+  salvarMes();renderBonificacao();
+}
+
+function renderRelatorio(){
+  const d=getD(), du=getDU(d);
+  const now=new Date();
+  const dg=`${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
+  document.getElementById('rel-lbl').textContent=d.label;
+
+  const totalLiq=d.ops.reduce((s,o)=>s+calcLiq(o.nome,d).liq,0);
+  const totalBase=d.ops.reduce((s,o)=>s+calcLiq(o.nome,d).base,0);
+  const totalBonus=d.ops.reduce((s,o)=>s+calcLiq(o.nome,d).bonusLojas,0);
+  const totalRev=d.ops.reduce((s,o)=>s+calcLiq(o.nome,d).bonusRev,0);
+  const totalDesc=d.ops.reduce((s,o)=>s+(calcLiq(o.nome,d).descTotal||0),0);
+  const lojaMeta=getLojasNaMeta(d);
+
+  document.getElementById('rel-content').innerHTML=`
+    <!-- CABEÇALHO -->
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:16px;border-bottom:3px solid #111;margin-bottom:22px">
+      <div>
+        <div style="font-size:24px;font-weight:700;letter-spacing:-.01em">Central OPS — Fechamento</div>
+        <div style="font-size:13px;color:#64748b;margin-top:4px">${d.label} &nbsp;·&nbsp; Gerado em ${dg} &nbsp;·&nbsp; ${du} dias úteis</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:13px;font-weight:600">${d.ops.length} operadores</div>
+        <div style="font-size:12px;color:#64748b">${lojaMeta.length} loja(s) na meta</div>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px">
+      <div style="border:2px solid #111;border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:4px">Base total</div>
+        <div style="font-size:20px;font-weight:700">${brl(totalBase)}</div>
+      </div>
+      <div style="border:2px solid #111;border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:4px">Bônus lojas + Rev.</div>
+        <div style="font-size:20px;font-weight:700;color:#16a34a">+${brl(totalBonus+totalRev)}</div>
+      </div>
+      <div style="border:2px solid #111;border-radius:10px;padding:12px 14px">
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:4px">Total descontos</div>
+        <div style="font-size:20px;font-weight:700;color:#dc2626">${totalDesc>0?'-'+brl(totalDesc):'—'}</div>
+      </div>
+      <div style="border:2px solid #111;border-radius:10px;padding:12px 14px;background:#f0fdf4">
+        <div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:4px">Total líquido</div>
+        <div style="font-size:20px;font-weight:700;color:#16a34a">${brl(totalLiq)}</div>
+      </div>
+    </div>
+
+    <!-- REGRAS -->
+    <div style="background:#f8fbff;border:1.5px solid #bfdbfe;border-radius:10px;padding:10px 16px;margin-bottom:22px;font-size:12px;color:#1e40af;line-height:1.9">
+      <strong>Regras aplicadas:</strong>
+      Base R$150 × nº lojas &nbsp;·&nbsp;
+      Loja na meta +R$${REGRAS.bonusPorLoja} &nbsp;·&nbsp;
+      Reversão +R$${REGRAS.valorRev.toFixed(2)} &nbsp;·&nbsp;
+      Erro -R$${REGRAS.valorErro.toFixed(2)} &nbsp;·&nbsp;
+      ADV verbal -${REGRAS.advVerbal.normal}% (grave -${REGRAS.advVerbal.grave}% / gravíssima -${REGRAS.advVerbal.gravissima}%) &nbsp;·&nbsp;
+      ADV escrita -${REGRAS.advEscrita.normal}% (grave -${REGRAS.advEscrita.grave}% / gravíssima -${REGRAS.advEscrita.gravissima}%)
+    </div>
+
+    <!-- LOJAS NA META -->
+    ${lojaMeta.length?`
+    <div style="margin-bottom:22px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:10px">🏪 Lojas na meta — bônus por operador</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        ${lojaMeta.map(l=>`<span style="background:#dcfce7;color:#15803d;border:1px solid #86efac;border-radius:8px;padding:4px 12px;font-size:12px;font-weight:600">✓ ${l.nome} — +R$${REGRAS.bonusPorLoja} por operador</span>`).join('')}
+      </div>
+    </div>`:''}
+
+    <!-- TABELA BONIFICAÇÃO -->
+    <div style="margin-bottom:22px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:12px">💰 Bonificação por operador</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:#111;color:#fff">
+            <th style="padding:7px 10px;text-align:left;font-weight:600">Operador</th>
+            <th style="padding:7px 10px;text-align:left;font-weight:600">Lojas</th>
+            <th style="padding:7px 10px;text-align:left;font-weight:600">Base</th>
+            <th style="padding:7px 10px;text-align:left;font-weight:600">+Meta lojas</th>
+            <th style="padding:7px 10px;text-align:left;font-weight:600">+Reversões</th>
+            <th style="padding:7px 10px;text-align:left;font-weight:600">-Erros</th>
+            <th style="padding:7px 10px;text-align:left;font-weight:600">-ADV</th>
+            <th style="padding:7px 10px;text-align:left;font-weight:600">Líquido</th>
+            <th style="padding:7px 10px;text-align:left;font-weight:600">Pts</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${d.ops.map((o,i)=>{
+            const cal=calcLiq(o.nome,d), p=getPts(o.nome,d);
+            const lojasStr=cal.lojas.map(l=>{
+              const lj=d.lojas.find(x=>x.nome===l);
+              const ok=lj&&lj.entregues>=lj.meta&&lj.entregues>0;
+              return`${ok?'✓':'○'} ${l.split(' ')[0]}`;
+            }).join(' · ');
+            const tag=cal.zerado?'<span style="background:#fee2e2;color:#b91c1c;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600">zerado</span>':
+                       cal.manual?'<span style="background:#ede9fe;color:#6d28d9;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600">manual</span>':'';
+            return`<tr style="${i%2===0?'background:#f9fafb':''}">
+              <td style="padding:8px 10px;font-weight:600;border-bottom:1px solid #e5e7eb">${o.nome}</td>
+              <td style="padding:8px 10px;font-size:11px;color:#64748b;border-bottom:1px solid #e5e7eb">${lojasStr||'—'}</td>
+              <td style="padding:8px 10px;border-bottom:1px solid #e5e7eb">${brl(cal.base)}</td>
+              <td style="padding:8px 10px;color:${cal.bonusLojas>0?'#16a34a':'#94a3b8'};font-weight:600;border-bottom:1px solid #e5e7eb">${cal.bonusLojas>0?'+'+brl(cal.bonusLojas):'—'}</td>
+              <td style="padding:8px 10px;color:${cal.bonusRev>0?'#0f766e':'#94a3b8'};font-weight:600;border-bottom:1px solid #e5e7eb">${cal.bonusRev>0?'+'+brl(cal.bonusRev):'—'}</td>
+              <td style="padding:8px 10px;color:${cal.descErros>0?'#dc2626':'#94a3b8'};font-weight:600;border-bottom:1px solid #e5e7eb">${cal.descErros>0?'-'+brl(cal.descErros):'—'}</td>
+              <td style="padding:8px 10px;color:${(cal.descAdv||0)>0?'#dc2626':'#94a3b8'};font-weight:600;border-bottom:1px solid #e5e7eb">${(cal.descAdv||0)>0?'-'+brl(cal.descAdv):'—'}</td>
+              <td style="padding:8px 10px;font-weight:700;font-size:14px;color:${cal.zerado?'#94a3b8':cal.liq>0?'#16a34a':'#94a3b8'};border-bottom:1px solid #e5e7eb">${cal.zerado?'R$ 0,00':cal.liq>0?brl(cal.liq):'—'} ${tag}</td>
+              <td style="padding:8px 10px;font-size:11px;color:#64748b;border-bottom:1px solid #e5e7eb">⭐${p.av} 🔄${p.rev} 🔻${p.erros}</td>
+            </tr>`;
+          }).join('')}
+          <tr style="background:#f0fdf4">
+            <td colspan="7" style="padding:9px 10px;font-weight:700;text-align:right;font-size:13px">TOTAL LÍQUIDO</td>
+            <td style="padding:9px 10px;font-weight:700;color:#16a34a;font-size:16px">${brl(totalLiq)}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- AVALIAÇÕES E PONTOS -->
+    <div style="margin-bottom:22px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:12px">⭐ Avaliações e pontos</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead>
+          <tr style="background:#111;color:#fff">
+            <th style="padding:7px 10px;text-align:left">Operador</th>
+            <th style="padding:7px 10px;text-align:left">Setor</th>
+            <th style="padding:7px 10px;text-align:left">⭐ Avaliações</th>
+            <th style="padding:7px 10px;text-align:left">🔄 Reversões</th>
+            <th style="padding:7px 10px;text-align:left">🔻 Erros</th>
+            <th style="padding:7px 10px;text-align:left">Meta av.</th>
+            <th style="padding:7px 10px;text-align:left">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${d.ops.map((o,i)=>{
+            const p=getPts(o.nome,d), s=stOp(o.nome,d);
+            const metaAv=o.metaAv||8, pct=Math.min(100,Math.round(p.av/metaAv*100));
+            const scls=s.l==='Destaque'?'background:#dcfce7;color:#15803d':s.l==='Atenção'?'background:#fef3c7;color:#92400e':s.l==='Risco alto'?'background:#fee2e2;color:#b91c1c':'background:#dbeafe;color:#1d4ed8';
+            return`<tr style="${i%2===0?'background:#f9fafb':''}">
+              <td style="padding:8px 10px;font-weight:600;border-bottom:1px solid #e5e7eb">${o.nome}${o.novo?` <span style="background:#ede9fe;color:#6d28d9;padding:1px 5px;border-radius:4px;font-size:10px">Novo</span>`:''}</td>
+              <td style="padding:8px 10px;font-size:11px;color:#64748b;border-bottom:1px solid #e5e7eb">${o.setor}</td>
+              <td style="padding:8px 10px;color:#16a34a;font-weight:700;border-bottom:1px solid #e5e7eb">${p.av}</td>
+              <td style="padding:8px 10px;color:#0f766e;font-weight:700;border-bottom:1px solid #e5e7eb">${p.rev}</td>
+              <td style="padding:8px 10px;color:${p.erros>0?'#dc2626':'#94a3b8'};font-weight:700;border-bottom:1px solid #e5e7eb">${p.erros}</td>
+              <td style="padding:8px 10px;border-bottom:1px solid #e5e7eb">${p.av}/${metaAv} (${pct}%)</td>
+              <td style="padding:8px 10px;border-bottom:1px solid #e5e7eb"><span style="${scls};padding:2px 9px;border-radius:10px;font-size:11px;font-weight:600">${s.l}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- OCORRÊNCIAS -->
+    ${(d.ocorrencias||[]).length?`
+    <div style="margin-bottom:22px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:12px">⚠️ Ocorrências (${(d.ocorrencias||[]).length})</div>
+      <table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="background:#111;color:#fff">
+          <th style="padding:7px 10px;text-align:left">Data</th>
+          <th style="padding:7px 10px;text-align:left">Operador</th>
+          <th style="padding:7px 10px;text-align:left">Tipo</th>
+          <th style="padding:7px 10px;text-align:left">Gravidade</th>
+          <th style="padding:7px 10px;text-align:left">Desc. aplicado</th>
+          <th style="padding:7px 10px;text-align:left">Motivo</th>
+        </tr></thead>
+        <tbody>
+          ${(d.ocorrencias||[]).map((o,i)=>{
+            const pct=getTipoPctCen(o.tipo,o.grav||'normal');
+            const gcls=o.grav==='gravissima'?'background:#fee2e2;color:#b91c1c':o.grav==='grave'?'background:#fef3c7;color:#92400e':'background:#dbeafe;color:#1d4ed8';
+            const gLabel=o.grav==='gravissima'?'Gravíssima':o.grav==='grave'?'Grave':'Normal';
+            return`<tr style="${i%2===0?'background:#f9fafb':''}">
+              <td style="padding:7px 10px;border-bottom:1px solid #e5e7eb;color:#64748b">${o.data}</td>
+              <td style="padding:7px 10px;border-bottom:1px solid #e5e7eb;font-weight:600">${o.op}</td>
+              <td style="padding:7px 10px;border-bottom:1px solid #e5e7eb">${o.tipo}</td>
+              <td style="padding:7px 10px;border-bottom:1px solid #e5e7eb"><span style="${gcls};padding:2px 8px;border-radius:8px;font-size:11px;font-weight:600">${gLabel}</span></td>
+              <td style="padding:7px 10px;border-bottom:1px solid #e5e7eb;color:${pct>0?'#dc2626':'#94a3b8'};font-weight:600">${pct>0?'-'+pct+'% base':'—'}</td>
+              <td style="padding:7px 10px;border-bottom:1px solid #e5e7eb;color:#64748b">${o.motivo}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>`:''}
+
+    <!-- OBSERVAÇÕES -->
+    ${(d.observacoes||[]).length?`
+    <div style="margin-bottom:22px">
+      <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:10px">📝 Observações</div>
+      <div style="background:#f8fbff;border:1.5px solid #bfdbfe;border-radius:10px;padding:12px 16px;font-size:13px;line-height:2">
+        ${(d.observacoes||[]).map(o=>`· ${o}`).join('<br/>')}
+      </div>
+    </div>`:''}
+
+    <!-- RODAPÉ -->
+    <div style="margin-top:24px;padding-top:12px;border-top:2px solid #111;display:flex;justify-content:space-between;font-size:11px;color:#64748b">
+      <span>Central OPS — Sistema de gestão</span>
+      <span>Gerado em ${dg} · ${d.label}</span>
+    </div>
+  `;
+}
+
+function exportarTxtCentral(){
+  const d=getD();
+  const totalLiq=d.ops.reduce((s,o)=>s+calcLiq(o.nome,d).liq,0);
+  const du=getDU(d);
+  let t=`CENTRAL OPS — ${d.label.toUpperCase()}\n${'='.repeat(44)}\n`;
+  t+=`Dias úteis: ${du} · Gerado em: ${new Date().toLocaleDateString('pt-BR')}\n\n`;
+  t+='BONIFICAÇÃO\n'+'-'.repeat(40)+'\n';
+  d.ops.forEach(o=>{
+    const cal=calcLiq(o.nome,d), p=getPts(o.nome,d);
+    const lojas=cal.lojas.join(' + ')||'—';
+    t+=`${o.nome.padEnd(26)} [${lojas}]\n`;
+    t+=`  Base: ${brl(cal.base)} | +Lojas: ${brl(cal.bonusLojas)} | +Rev: ${brl(cal.bonusRev)} | -Erros: ${brl(cal.descErros)} | -ADV: ${brl(cal.descAdv||0)}\n`;
+    t+=`  ► LÍQUIDO: ${cal.zerado?'R$ 0,00':brl(cal.liq)}${cal.manual?' [MANUAL]':cal.zerado?' [ZERADO]':''}\n\n`;
+  });
+  t+=`${'─'.repeat(40)}\nTOTAL LÍQUIDO: ${brl(totalLiq)}\n\n`;
+  if((d.ocorrencias||[]).length){
+    t+='OCORRÊNCIAS\n'+'-'.repeat(40)+'\n';
+    d.ocorrencias.forEach(o=>t+=`${o.data.padEnd(7)} ${o.op.padEnd(24)} [${o.tipo}] ${o.motivo}\n`);
+  }
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([t],{type:'text/plain;charset=utf-8'}));
+  a.download=`central_ops_${d.label.replace(' ','_').toLowerCase()}.txt`;
+  a.click();
+}
+
+function zerarOp(i,nome){
+  if(!confirm('Zerar bonificação de "'+nome+'" para R$0,00?'))return;
+  const d=getD();
+  const op=d.ops[i];if(!op)return;
+  op._liqZerado=true;
+  op._liqManual=0;
+  let bh=d.bonificacao?.find(x=>x.nome===op.nome);
+  if(bh)bh.total=0;
+  salvarMes();renderBonificacao();
+}
+
+function restaurarOp(i){
+  const d=getD();
+  const op=d.ops[i];if(!op)return;
+  op._liqZerado=false;
+  op._liqManual=0;
+  let bh=d.bonificacao?.find(x=>x.nome===op.nome);
+  if(bh)bh.total=0;
+  salvarMes();renderBonificacao();
+}
+
+function salvarMes(){const d=getD();const i=meses.findIndex(m=>m.id===mesAtual);if(i>=0)meses[i]=d;saveAll();showBanner()}
+function salvarSilent(){const d=getD();const i=meses.findIndex(m=>m.id===mesAtual);if(i>=0)meses[i]=d;saveAll()}
+function showBanner(){const b=document.getElementById('save-banner');b.style.display='block';setTimeout(()=>b.style.display='none',2000)}
+
+function exportarHTML(){
+  // Garante que _liqManual de cada operador está salvo nos dados antes de exportar
+  meses.forEach(m=>{
+    m.ops.forEach(o=>{
+      if(o._liqManual>0){
+        let bh=m.bonificacao?.find(x=>x.nome===o.nome);
+        if(!bh){m.bonificacao=m.bonificacao||[];m.bonificacao.push({nome:o.nome,valRotina:o.valRotina||75,valAtend:o.valAtend||75,total:o._liqManual});}
+        else bh.total=o._liqManual;
+      }
+    });
+  });
+  const dados=JSON.stringify({meses,mesAtual,nid,lojasPorOp:LOJAS_POR_OP,regras:REGRAS});
+  const inj=`<script>(function(){
+    const s=${dados};
+    localStorage.setItem('cv3_meses',JSON.stringify(s.meses));
+    localStorage.setItem('cv3_cur',JSON.stringify(s.mesAtual));
+    localStorage.setItem('cv3_nid',JSON.stringify(s.nid));
+    if(s.regras)localStorage.setItem('cv3_regras',JSON.stringify(s.regras));
+    Object.assign(window._LOJAS_POR_OP||{},s.lojasPorOp||{});
+  })();<\/script>`;
+  const html=document.documentElement.outerHTML.replace('</body>',inj+'</body>');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'}));a.download='ops_central_v5.html';a.click();
+}
+
+function exportarExcel(){
+  const wb=XLSX.utils.book_new();
+  meses.forEach(m=>{
+    const rows=[['Operador','Setor','Avaliações','Reversões','Erros','Base','Bônus Lojas','Bônus Rev','Desc Erros','Líquido']];
+    m.ops.forEach(o=>{
+      const c=calcLiq(o.nome,m);
+      rows.push([o.nome,o.setor,getPts(o.nome,m).av,getPts(o.nome,m).rev,getPts(o.nome,m).erros,c.base,c.bonusLojas,c.bonusRev,c.descErros,c.liq]);
+    });
+    rows.push([]);
+    rows.push(['TOTAL','','','','','','','','',m.ops.reduce((s,o)=>s+calcLiq(o.nome,m).liq,0)]);
+    rows.push([]);
+    rows.push(['Ocorrências']);
+    rows.push(['Data','Operador','Motivo','ADV']);
+    (m.ocorrencias||[]).forEach(o=>rows.push([o.data,o.op,o.motivo,o.adv]));
+    const ws=XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols']=[{wch:22},{wch:16},{wch:10},{wch:10},{wch:8},{wch:12},{wch:12},{wch:10},{wch:10},{wch:12}];
+    XLSX.utils.book_append_sheet(wb,ws,m.label.substring(0,31));
+  });
+  XLSX.writeFile(wb,'central_ops_'+new Date().getFullYear()+'.xlsx');
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+// Reset _liqManual de Camily em todos os meses ao carregar
+meses.forEach(m=>{
+  const camily=m.ops?.find(o=>o.nome==='Camily');
+  if(camily){camily._liqManual=0;}
+  const bonCamily=m.bonificacao?.find(b=>b.nome==='Camily');
+  if(bonCamily&&bonCamily.total>0&&m.id==='2026-05'){bonCamily.total=0;}
+});
+saveAll();
+populateSel();
+setTimeout(()=>renderOverview(),60);
+</script>
+</body>
+</html>
