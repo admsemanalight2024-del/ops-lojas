@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>OPS Lojas V5 — Online</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f6ff;color:#1e293b;font-size:14px}
+.app{padding:16px;max-width:1100px;margin:0 auto}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.logo{font-size:19px;font-weight:700;color:#1e40af}.logo span{color:#16a34a}
+.hright{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tabs{display:flex;gap:3px;margin-bottom:16px;background:#dbeafe;border-radius:12px;padding:3px;width:fit-content;flex-wrap:wrap}
+.tab{padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:#64748b;border-radius:9px;transition:all .15s;white-space:nowrap}
+.tab.active{background:#fff;color:#1d4ed8;box-shadow:0 1px 5px rgba(59,130,246,.18)}
+.page{display:none}.page.active{display:block}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.kpi{border-radius:12px;padding:14px 16px;border:2px solid transparent;color:#fff}
+.kpi.green{background:#16a34a;border-color:#15803d}
+.kpi.dark{background:#1a1a1a;border-color:#333}
+.kpi.yellow{background:#ca8a04;border-color:#a16207}
+.kpi.red{background:#dc2626;border-color:#b91c1c}
+.kpi.blue{background:#1d4ed8;border-color:#1e40af}
+.kl{font-size:11px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;font-weight:500}
+.kv{font-size:24px;font-weight:700;line-height:1}
+.ks{font-size:11px;color:rgba(255,255,255,.65);margin-top:4px}
+.card{background:#fff;border-radius:14px;padding:16px 18px;border:1.5px solid #e2eaf8;margin-bottom:12px;box-shadow:0 1px 4px rgba(59,130,246,.05)}
+.card:last-child{margin-bottom:0}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.ct{font-size:12px;font-weight:700;color:#1e293b;text-transform:uppercase;letter-spacing:.05em}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{text-align:left;font-size:10px;font-weight:600;color:#94a3b8;padding:6px 7px;border-bottom:1.5px solid #e2eaf8;text-transform:uppercase;letter-spacing:.04em}
+td{padding:8px 7px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f8fbff}
+.bx{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.bx-g{background:#dcfce7;color:#15803d}.bx-r{background:#fee2e2;color:#b91c1c}
+.bx-b{background:#dbeafe;color:#1d4ed8}.bx-y{background:#fef3c7;color:#92400e}
+.bx-p{background:#ede9fe;color:#6d28d9}.bx-t{background:#ccfbf1;color:#0f766e}
+.btn{padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #cbd5e1;border-radius:9px;background:#fff;color:#1e293b;transition:all .12s;white-space:nowrap}
+.btn:hover{background:#f0f6ff;border-color:#93c5fd}
+.btn-b{background:#1d4ed8;color:#fff;border-color:#1e40af}.btn-b:hover{background:#1e40af}
+.btn-g{background:#16a34a;color:#fff;border-color:#15803d}.btn-g:hover{background:#15803d}
+.btn-r{background:#fee2e2;color:#b91c1c;border-color:#fca5a5;padding:3px 8px;font-size:11px}
+.btn-y{background:#fef3c7;color:#92400e;border-color:#fcd34d}
+.ei{font-size:12px;padding:5px 8px;border:1.5px solid #cbd5e1;border-radius:7px;background:#fff;color:#1e293b}
+.ei:focus{outline:none;border-color:#3b82f6}
+.ei.sm{width:70px}.ei.md{width:95px}
+.pb-wrap{background:#e0eaff;border-radius:4px;height:7px;overflow:hidden;margin-top:4px}
+.pb{height:100%;border-radius:4px}
+.pg{background:#16a34a}.pa{background:#ca8a04}.pr{background:#dc2626}
+.banner{font-size:12px;font-weight:600;padding:7px 14px;border-radius:10px;display:none;margin-bottom:10px;border:1.5px solid}
+.banner.ok{background:#dbeafe;color:#1d4ed8;border-color:#93c5fd}
+.modal-overlay{position:fixed;inset:0;background:rgba(30,64,175,.2);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:1000}
+.modal-box{background:#fff;border-radius:16px;padding:22px;width:min(460px,92vw);border:1.5px solid #bfdbfe;box-shadow:0 8px 32px rgba(59,130,246,.15);max-height:90vh;overflow-y:auto}
+.modal-box h3{font-size:15px;font-weight:700;margin-bottom:14px}
+.fr{margin-bottom:9px}
+.fr label{font-size:11px;font-weight:600;color:#64748b;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+.fr input,.fr select,.fr textarea{width:100%;font-size:13px;border:1.5px solid #cbd5e1;border-radius:8px;padding:6px 9px;background:#fff;color:#1e293b}
+.fr input:focus,.fr select:focus{outline:none;border-color:#3b82f6}
+.fr textarea{min-height:50px;resize:vertical}
+.mbtns{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.loja-card{border:1.5px solid #e2eaf8;border-radius:12px;padding:14px 16px;margin-bottom:10px;background:#fff}
+.loja-card.meta{border-color:#86efac;background:#f0fdf4}
+.loja-card.warn{border-color:#fcd34d;background:#fffbeb}
+.loja-card.danger{border-color:#fca5a5;background:#fef2f2}
+.desc-chip{background:#fef2f2;color:#dc2626;border:1px solid #fca5a5;border-radius:6px;font-size:11px;font-weight:600;padding:2px 7px;display:inline-block}
+.bonus-chip{background:#dcfce7;color:#15803d;border:1px solid #86efac;border-radius:6px;font-size:11px;font-weight:600;padding:2px 7px;display:inline-block}
+.kit-badge{background:#ede9fe;color:#6d28d9;border:1px solid #c4b5fd;border-radius:6px;font-size:11px;font-weight:600;padding:2px 7px;display:inline-block}
+#status-bar{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:4px 10px;border-radius:8px;background:#f0fdf4;color:#15803d;border:1px solid #86efac}
+#status-dot{width:8px;height:8px;border-radius:50%;background:#16a34a;flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@media print{.no-print{display:none!important}body{background:#fff!important;font-size:11px}.app{padding:8px;max-width:100%}.card,.loja-card{box-shadow:none!important;border:1px solid #ccc!important;page-break-inside:avoid}.kpi{border:1px solid #ccc!important}}
+@media(max-width:600px){.kpi-row{grid-template-columns:repeat(2,1fr)}.g2,.g3{grid-template-columns:1fr}.tabs{gap:2px}.tab{padding:6px 10px;font-size:11px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header no-print">
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <div class="logo">OPS<span>Lojas</span></div>
+    <div style="width:2px;height:16px;background:#1a1a1a;border-radius:1px"></div>
+    <select id="sel-mes" onchange="trocarMes()" class="ei" style="width:130px;font-weight:600;color:#1d4ed8;border-color:#bfdbfe"></select>
+    <button class="btn btn-b" onclick="showModal('novoMes')" style="font-size:11px;padding:4px 10px">+ Novo mês</button>
+    <div id="status-bar"><div id="status-dot"></div><span id="status-txt">Conectando…</span></div>
+  </div>
+  <div class="hright">
+    <button class="btn btn-y" onclick="showModal('regras')" style="font-size:11px;padding:4px 10px">⚙️ Regras</button>
+    <button class="btn btn-g" onclick="salvarMes()" style="font-size:11px;padding:4px 10px">💾 Salvar</button>
+    <button class="btn" onclick="window.print()" style="font-size:11px;padding:4px 10px">🖨️</button>
+  </div>
+</div>
+<div id="save-banner" class="banner ok no-print">✓ Salvo!</div>
+<div class="tabs no-print">
+  <button class="tab active" data-id="overview" onclick="setTab('overview',this)">📊 Overview</button>
+  <button class="tab" data-id="lojas" onclick="setTab('lojas',this)">🏪 Lojas</button>
+  <button class="tab" data-id="operadores" onclick="setTab('operadores',this)">👥 Operadores</button>
+  <button class="tab" data-id="kits" onclick="setTab('kits',this)">📦 Kits Floripa</button>
+  <button class="tab" data-id="ocorrencias" onclick="setTab('ocorrencias',this)">⚠️ Ocorrências</button>
+  <button class="tab" data-id="historico" onclick="setTab('historico',this)">📅 Histórico</button>
+  <button class="tab" data-id="relatorio" onclick="setTab('relatorio',this)" style="color:#1d4ed8">🖨️ Relatório</button>
+</div>
+<div id="tab-overview" class="page active">
+  <div class="kpi-row" id="kpis-ov"></div>
+  <div class="g3">
+    <div class="card"><div class="ch"><span class="ct">🏪 Performance das lojas</span></div><div id="ov-lojas"></div></div>
+    <div>
+      <div class="card"><div class="ch"><span class="ct">⚠️ Ocorrências por tipo</span></div><div id="ov-oc-tipos"></div></div>
+      <div class="card" style="margin-top:12px"><div class="ch"><span class="ct">🚨 Alertas ativos</span></div><div id="ov-alertas"></div></div>
+    </div>
+  </div>
+</div>
+<div id="tab-lojas" class="page">
+  <div class="card">
+    <div class="ch"><span class="ct">🏪 Metas e entregas</span><button class="btn btn-g" onclick="salvarMes()">💾 Salvar</button></div>
+    <p style="font-size:11px;color:#dc2626;font-weight:600;margin-bottom:6px">⚠️ Erros = desconto automático · R$<span id="lbl-erro">20</span> por erro</p>
+    <p style="font-size:11px;color:#7c3aed;font-weight:600;margin-bottom:10px">📦 Floripa: campo de kits aparece na coluna ⏳ Ativos</p>
+    <table>
+      <thead><tr><th style="width:16%">Loja</th><th style="width:10%">Meta</th><th style="width:10%">Entregues</th><th style="width:7%">Erros</th><th style="width:9%">Desc. erros</th><th style="width:9%">Bônus meta</th><th style="width:10%">⏳ Ativos</th><th style="width:7%">%</th><th>Status</th></tr></thead>
+      <tbody id="tab-lojas-body"></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="ch"><span class="ct">📊 Entregas vs meta</span></div>
+    <div style="position:relative;height:220px"><canvas id="chart-lojas"></canvas></div>
+  </div>
+</div>
+<div id="tab-operadores" class="page"><div id="ops-por-loja"></div></div>
+<div id="tab-kits" class="page">
+  <div class="kpi-row" id="kpis-kits"></div>
+  <div class="card">
+    <div class="ch"><span class="ct">📦 Kits de funcionários — Floripa</span><button class="btn btn-b" onclick="showModal('addKit')">+ Lançar kits</button></div>
+    <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#1e40af;line-height:1.8"><strong>Regra:</strong> R$1,00 por kit montado · Dividido igualmente entre os operadores de Floripa · Kits <strong>não contam</strong> para a meta de entregas</div>
+    <table>
+      <thead><tr><th style="width:18%">Mês</th><th style="width:16%">Kits montados</th><th style="width:14%">Total (R$)</th><th style="width:16%">Nº operadores</th><th style="width:16%">Por operador</th><th style="width:14%">Status</th><th style="width:6%"></th></tr></thead>
+      <tbody id="tab-kits-body"></tbody>
+    </table>
+  </div>
+  <div class="card"><div class="ch"><span class="ct">👥 Operadores de Floripa — mês atual</span></div><div id="kits-ops-lista"></div></div>
+</div>
+<div id="tab-ocorrencias" class="page">
+  <div class="kpi-row" id="kpis-ocs"></div>
+  <div class="card">
+    <div class="ch"><span class="ct">⚠️ Ocorrências e ADVs</span><button class="btn btn-b" onclick="showModal('oc')">+ Nova</button></div>
+    <table>
+      <thead><tr><th style="width:9%">Data</th><th style="width:20%">Operador</th><th style="width:12%">Loja</th><th style="width:14%">Tipo</th><th style="width:12%">Desc.</th><th>Motivo</th><th style="width:6%"></th></tr></thead>
+      <tbody id="tab-ocs-body"></tbody>
+    </table>
+  </div>
+</div>
+<div id="tab-historico" class="page">
+  <div class="kpi-row" id="kpis-hist"></div>
+  <div class="g2">
+    <div class="card"><div class="ch"><span class="ct">📅 Meses salvos</span></div><div id="hist-lista"></div></div>
+    <div>
+      <div class="card" style="margin-bottom:12px"><div class="ch"><span class="ct">📈 Evolução folha</span></div><div style="position:relative;height:180px"><canvas id="chart-hist"></canvas></div></div>
+      <div class="card"><div class="ch"><span class="ct">📊 Entregas por mês</span></div><div style="position:relative;height:160px"><canvas id="chart-ent"></canvas></div></div>
+    </div>
+  </div>
+</div>
+<div id="tab-relatorio" class="page">
+  <div class="no-print" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+    <div><div style="font-size:15px;font-weight:700">Relatório de fechamento</div><div id="rel-lbl" style="font-size:12px;color:#64748b"></div></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-g" onclick="window.print()">🖨️ Imprimir</button>
+      <button class="btn" onclick="exportarTxt()">📥 .txt</button>
+    </div>
+  </div>
+  <div id="rel-content" style="background:#fff;border:1.5px solid #1a1a1a;border-radius:12px;padding:26px 30px"></div>
+</div>
+<div id="modal-area" style="display:none" class="no-print">
+  <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal-box">
+      <h3 id="modal-title">—</h3>
+      <div id="modal-content"></div>
+      <div class="mbtns"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-b" id="msave">Salvar</button></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+<!-- FIREBASE SDK (módulo ES) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+// ╔══════════════════════════════════════════╗
+// ║  URL DO SEU BANCO FIREBASE — NÃO ALTERE  ║
+const FB_URL = "https://metas-lojas-e-central-default-rtdb.firebaseio.com";
+// ╚══════════════════════════════════════════╝
+
+const app = initializeApp({ databaseURL: FB_URL });
+const db  = getDatabase(app);
+
+function setStatus(ok, txt){
+  const bar = document.getElementById('status-bar');
+  const dot = document.getElementById('status-dot');
+  Object.assign(bar.style,{background:ok?'#f0fdf4':'#fef2f2',color:ok?'#15803d':'#b91c1c',borderColor:ok?'#86efac':'#fca5a5'});
+  dot.style.background = ok ? '#16a34a' : '#dc2626';
+  document.getElementById('status-txt').textContent = txt;
+}
+
+// Salvar dados no Firebase
+window._fbSave = async function(payload){
+  try{
+    await set(ref(db,'ops_lojas'), payload);
+    setStatus(true,'● Online — salvo agora');
+    return true;
+  }catch(e){
+    setStatus(false,'● Erro ao salvar');
+    return false;
+  }
+};
+
+// Escuta mudanças em TEMPO REAL — atualiza para todos os usuários
+onValue(ref(db,'ops_lojas'), snap=>{
+  const data = snap.val();
+  if(data && window._appReady && !window._isSaving){
+    window._applyData(data);
+    setStatus(true,'● Online — ao vivo');
+  } else if(!data){
+    setStatus(true,'● Online — sem dados ainda');
+  }
+}, ()=>setStatus(false,'● Sem conexão'));
+
+// Carrega dados iniciais ao abrir
+get(ref(db,'ops_lojas')).then(snap=>{
+  window._initApp(snap.val());
+}).catch(()=>{
+  window._initApp(null);
+  setStatus(false,'● Offline — sem conexão');
+});
+</script>
+
+<script>
+// ── UTILS ──────────────────────────────────────────────────────────────────
+function brl(v){if(!v||isNaN(v)||v===0)return'—';return'R$\u00a0'+parseFloat(v).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
+function hoje(){const n=new Date();return`${n.getDate().toString().padStart(2,'0')}/${(n.getMonth()+1).toString().padStart(2,'0')}`}
+
+const REGRAS_DEF={erroPorUnidade:20,bonusMeta:150,advVerbal:{normal:25,grave:50,gravissima:100},advEscrita:{normal:50,grave:75,gravissima:100},kitPorUnidade:1};
+const LOJAS_NOMES=["Balneário","Belo Horizonte","Brasília","Curitiba","Floripa","Porto Alegre","São Paulo"];
+function mkLoja(nome,meta,entregues,erros,bonusMeta,ativos,kits){return{nome,meta:meta||0,entregues:entregues||0,erros:erros||0,bonusMeta:bonusMeta||0,ativos:ativos||0,kits:kits||0}}
+
+const DADOS=[
+  {id:"2026-01",label:"Janeiro 2026",ano:2026,mes:0,lojas:[mkLoja("Balneário",400,472,1,150),mkLoja("Belo Horizonte",700,847,5,300),mkLoja("Brasília",600,632,4,150),mkLoja("Curitiba",1200,1305,9,150),mkLoja("Floripa",1500,1310,4,0,0,212),mkLoja("Porto Alegre",750,775,6,150),mkLoja("São Paulo",1500,1509,4,150)],operadores:[{nome:"Gabriel",loja:"Balneário",valor:452,obs:""},{nome:"Eduardo",loja:"Belo Horizonte",valor:533.34,obs:""},{nome:"Jonatas",loja:"Belo Horizonte",valor:223.66,obs:"Início 17/01"},{nome:"Jabez",loja:"Brasília",valor:183.27,obs:"Início 15/01"},{nome:"Sthefany",loja:"Brasília",valor:378.73,obs:""},{nome:"Bruna",loja:"Curitiba",valor:567.50,obs:""},{nome:"Thaline",loja:"Curitiba",valor:567.50,obs:""},{nome:"Leonardo",loja:"Floripa",valor:484,obs:""},{nome:"Levi",loja:"Floripa",valor:484,obs:""},{nome:"Matheus",loja:"Floripa",valor:484,obs:""},{nome:"João Pedro",loja:"Porto Alegre",valor:385,obs:"Soma dias 02 e 03"},{nome:"Fernanda",loja:"Porto Alegre",valor:0,obs:"Início 28/01"},{nome:"João Júnior",loja:"Porto Alegre",valor:0,obs:"Desligamento 20/01"},{nome:"Gabriel SP",loja:"São Paulo",valor:476.33,obs:""},{nome:"Samuel",loja:"São Paulo",valor:0,obs:"Desligamento 27/01"},{nome:"William",loja:"São Paulo",valor:0,obs:"ADV suspensão"}],ocorrencias:[],kits:212,observacoes:["Floripa: 212 kits funcionários — não conta na meta"]},
+  {id:"2026-02",label:"Fevereiro 2026",ano:2026,mes:1,lojas:[mkLoja("Balneário",400,501,3,150),mkLoja("Belo Horizonte",700,723,3,150),mkLoja("Brasília",600,564,7,0),mkLoja("Curitiba",1200,1069,6,0),mkLoja("Floripa",1500,1205,5,0,0,212),mkLoja("Porto Alegre",750,762,8,150),mkLoja("São Paulo",1500,1206,3,0)],operadores:[{nome:"Gabriel",loja:"Balneário",valor:441,obs:""},{nome:"Eduardo",loja:"Belo Horizonte",valor:331.50,obs:""},{nome:"Jonatas",loja:"Belo Horizonte",valor:0,obs:"Desligamento"},{nome:"Sthefany",loja:"Brasília",valor:212,obs:""},{nome:"Jabez",loja:"Brasília",valor:0,obs:"Desligamento"},{nome:"Bruna",loja:"Curitiba",valor:474.50,obs:""},{nome:"Thaline",loja:"Curitiba",valor:474.50,obs:""},{nome:"Leonardo",loja:"Floripa",valor:472.33,obs:""},{nome:"Levi",loja:"Floripa",valor:472.33,obs:""},{nome:"Matheus",loja:"Floripa",valor:472.33,obs:""},{nome:"Fernanda",loja:"Porto Alegre",valor:276.50,obs:""},{nome:"João Pedro",loja:"Porto Alegre",valor:276.50,obs:""},{nome:"Alan",loja:"São Paulo",valor:382,obs:""},{nome:"Gabriel SP",loja:"São Paulo",valor:382,obs:""},{nome:"William",loja:"São Paulo",valor:382,obs:""}],ocorrencias:[{id:1,data:"09/02",op:"Eduardo",loja:"BH",tipo:"Adv. verbal",grav:"normal",motivo:"Advertência - Atraso"},{id:2,data:"09/02",op:"Gabriel SP",loja:"SP",tipo:"Adv. verbal",grav:"normal",motivo:"Advertência verbal"},{id:3,data:"12/02",op:"Jonatas",loja:"BH",tipo:"Desligamento",grav:"normal",motivo:"Desligamento"},{id:4,data:"16/02",op:"Jabez",loja:"BSB",tipo:"Falta",grav:"normal",motivo:"Falta sem justificativa"},{id:5,data:"23/02",op:"Gabriel SP",loja:"SP",tipo:"Adv. verbal",grav:"normal",motivo:"Advertência verbal"},{id:6,data:"24/02",op:"William",loja:"SP",tipo:"Adv. verbal",grav:"normal",motivo:"Advertência verbal"},{id:7,data:"25/02",op:"Jabez",loja:"BSB",tipo:"Desligamento",grav:"normal",motivo:"Desligamento"}],kits:212,observacoes:["Floripa: 212 kits de funcionários"]},
+  {id:"2026-03",label:"Março 2026",ano:2026,mes:2,lojas:[mkLoja("Balneário",400,536,1,150),mkLoja("Belo Horizonte",700,906,3,150),mkLoja("Brasília",600,716,4,150),mkLoja("Curitiba",1200,1432,4,150),mkLoja("Floripa",1500,1474,8,0,0,228),mkLoja("Porto Alegre",750,1047,0,150),mkLoja("São Paulo",1500,1500,1,150)],operadores:[{nome:"Darmisson Gabrel",loja:"Balneário",valor:406.50,obs:"-25% adv verbal"},{nome:"Siderley Neto",loja:"Belo Horizonte",valor:333.11,obs:"Início 11/03"},{nome:"Gabriel Correa Rosa",loja:"Belo Horizonte",valor:401.85,obs:"Início 13/03"},{nome:"Mayza",loja:"Belo Horizonte",valor:0,obs:"Início 23/03"},{nome:"Bruce William",loja:"Brasília",valor:247.67,obs:"Início 05/03"},{nome:"Bismarque da Silva",loja:"Brasília",valor:305.77,obs:"Início 07/03"},{nome:"Sthefany Silva",loja:"Brasília",valor:0,obs:""},{nome:"Bruna Campos",loja:"Curitiba",valor:676,obs:""},{nome:"Thaline Santos",loja:"Curitiba",valor:676,obs:""},{nome:"Leonardo Rabelo",loja:"Floripa",valor:438,obs:"Desligamento 24/03"},{nome:"Levi Fernando Komer",loja:"Floripa",valor:438,obs:""},{nome:"Matheus Luiz Machado",loja:"Floripa",valor:219,obs:"-50% adv escrita"},{nome:"João Marcos Santos",loja:"Porto Alegre",valor:342.80,obs:"Início 10/03 Saída 24/03"},{nome:"João Pedro",loja:"Porto Alegre",valor:706.32,obs:""},{nome:"Alan Roberto Souza",loja:"São Paulo",valor:493.66,obs:""},{nome:"Gabriel Novaes",loja:"São Paulo",valor:493.66,obs:""},{nome:"William Rodolfo",loja:"São Paulo",valor:493.66,obs:""}],ocorrencias:[{id:10,data:"12/03",op:"William",loja:"SP",tipo:"Atraso",grav:"normal",motivo:"Atraso"},{id:11,data:"16/03",op:"Bruce",loja:"BSB",tipo:"Atraso",grav:"normal",motivo:"Atraso justificado"},{id:12,data:"17/03",op:"Levi",loja:"FLN",tipo:"Atraso",grav:"normal",motivo:"Atraso / adv verbal"},{id:13,data:"18/03",op:"Matheus",loja:"FLN",tipo:"Adv. escrita",grav:"normal",motivo:"Bateu ponto fora do raio"},{id:14,data:"19/03",op:"Siderley",loja:"BH",tipo:"Adv. verbal",grav:"normal",motivo:"Uso de EPIs"},{id:15,data:"21/03",op:"Bruce",loja:"BSB",tipo:"Falta",grav:"normal",motivo:"Falta sem justificativa"},{id:16,data:"25/03",op:"Alan",loja:"SP",tipo:"Adv. verbal",grav:"normal",motivo:"Bateu ponto fora do raio"},{id:17,data:"26/03",op:"Leonardo",loja:"FLN",tipo:"Adv. escrita",grav:"normal",motivo:"Falta uso de EPI"}],kits:228,observacoes:["Floripa: 228 kits de funcionários","Darmisson: -25% adv verbal","Matheus: -50% adv escrita"]},
+  {id:"2026-04",label:"Abril 2026",ano:2026,mes:3,lojas:[mkLoja("Balneário",450,547,3,150),mkLoja("Belo Horizonte",850,826,2,0),mkLoja("Brasília",700,710,3,150),mkLoja("Curitiba",1450,1241,5,0),mkLoja("Floripa",1500,1349,8,0,0,229),mkLoja("Porto Alegre",900,820,3,0),mkLoja("São Paulo",1550,1338,2,0)],operadores:[{nome:"Darmisson Gabrel",loja:"Balneário",valor:527,obs:""},{nome:"Mayza",loja:"Balneário",valor:0,obs:"Início 22/04"},{nome:"Pedro Henrique",loja:"Belo Horizonte",valor:262,obs:"Início 22/04"},{nome:"Gabriel Correa Rosa",loja:"Belo Horizonte",valor:262,obs:""},{nome:"Bruce William",loja:"Brasília",valor:325,obs:""},{nome:"Bismarque da Silva",loja:"Brasília",valor:325,obs:""},{nome:"Bruna Campos",loja:"Curitiba",valor:395.50,obs:""},{nome:"Thaline Santos",loja:"Curitiba",valor:395.50,obs:""},{nome:"Kauane Rodrigues",loja:"Floripa",valor:418.14,obs:"Início 04/04"},{nome:"Levi Fernando Komer",loja:"Floripa",valor:472.66,obs:""},{nome:"Matheus Luiz Machado",loja:"Floripa",valor:472.66,obs:"-2 ADV"},{nome:"Adriano",loja:"Porto Alegre",valor:380,obs:""},{nome:"João Pedro",loja:"Porto Alegre",valor:380,obs:""},{nome:"Alan Roberto Souza",loja:"São Paulo",valor:432.66,obs:""},{nome:"Gabriel Novaes",loja:"São Paulo",valor:432.66,obs:""},{nome:"William Rodolfo",loja:"São Paulo",valor:432.66,obs:""}],ocorrencias:[{id:20,data:"07/04",op:"William Rodolfo",loja:"SP",tipo:"Atraso",grav:"normal",motivo:"Metro parado"},{id:21,data:"07/04",op:"Alan Roberto Souza",loja:"SP",tipo:"Atraso",grav:"normal",motivo:"Metro parado"},{id:22,data:"08/04",op:"Siderley",loja:"BH",tipo:"Adv. escrita",grav:"normal",motivo:"Por atraso"},{id:23,data:"10/04",op:"Alan Roberto Souza",loja:"SP",tipo:"Falta",grav:"normal",motivo:"Sem atestado"},{id:24,data:"13/04",op:"Alan Roberto Souza",loja:"SP",tipo:"Adv. verbal",grav:"normal",motivo:"Falta"},{id:25,data:"15/04",op:"Matheus Luiz Machado",loja:"FLN",tipo:"Adv. verbal",grav:"normal",motivo:"Sobrecarregar colegas"},{id:26,data:"17/04",op:"Matheus Luiz Machado",loja:"FLN",tipo:"Adv. escrita",grav:"normal",motivo:"Uso de celular pessoal"},{id:27,data:"20/04",op:"Siderley",loja:"BH",tipo:"Desligamento",grav:"gravissima",motivo:"Desligamento"},{id:28,data:"28/04",op:"William Rodolfo",loja:"SP",tipo:"Adv. verbal",grav:"normal",motivo:"Por atraso"}],kits:229,observacoes:["229 kits de funcionários — Floripa","Balneário bateu meta: Mayza início 22/04"]},
+  {id:"2026-05",label:"Maio 2026",ano:2026,mes:4,lojas:[mkLoja("Balneário",437,449,0,150),mkLoja("Belo Horizonte",874,874,0,150),mkLoja("Brasília",777,585,0,0),mkLoja("Curitiba",1408,1408,0,150),mkLoja("Floripa",1602,1279,0,0,0,0),mkLoja("Porto Alegre",1019,1019,0,150),mkLoja("São Paulo",1650,1652,0,150)],operadores:[{nome:"Gabriel Ortiz",loja:"Balneário",valor:0,obs:"Início 06/05"},{nome:"Pedro Henrique",loja:"Belo Horizonte",valor:0,obs:""},{nome:"Gabriel Correa Rosa",loja:"Belo Horizonte",valor:0,obs:""},{nome:"Bruce William",loja:"Brasília",valor:0,obs:""},{nome:"Bismarque da Silva",loja:"Brasília",valor:0,obs:""},{nome:"Bruna Campos",loja:"Curitiba",valor:0,obs:""},{nome:"Thaline Santos",loja:"Curitiba",valor:0,obs:""},{nome:"Kauane Rodrigues",loja:"Floripa",valor:0,obs:""},{nome:"Levi Fernando Komer",loja:"Floripa",valor:0,obs:""},{nome:"Diego Luiz",loja:"Floripa",valor:0,obs:"Início 18/05"},{nome:"Adriano",loja:"Porto Alegre",valor:0,obs:""},{nome:"João Pedro",loja:"Porto Alegre",valor:0,obs:""},{nome:"Alan Roberto Souza",loja:"São Paulo",valor:0,obs:""},{nome:"Gabriel Novaes",loja:"São Paulo",valor:0,obs:""},{nome:"William Rodolfo",loja:"São Paulo",valor:0,obs:""}],ocorrencias:[{id:30,data:"05/05",op:"Mateus",loja:"FLN",tipo:"Adv. escrita",grav:"normal",motivo:"Falta sem justificativa"},{id:31,data:"06/05",op:"Alan Roberto Souza",loja:"SP",tipo:"Falta",grav:"normal",motivo:"Com atestado"},{id:32,data:"08/05",op:"Alan Roberto Souza",loja:"SP",tipo:"Adv. escrita",grav:"grave",motivo:"Atraso — reincidência"},{id:33,data:"08/05",op:"Levi Fernando Komer",loja:"FLN",tipo:"Adv. verbal",grav:"normal",motivo:"Atraso"},{id:34,data:"13/05",op:"Levi Fernando Komer",loja:"FLN",tipo:"Adv. verbal",grav:"normal",motivo:"Envio de avaria acumulada"},{id:35,data:"15/05",op:"Alan Roberto Souza",loja:"SP",tipo:"Adv. escrita",grav:"gravissima",motivo:"Atraso — 3ª ocorrência"},{id:36,data:"26/05",op:"William Rodolfo",loja:"SP",tipo:"Adv. verbal",grav:"normal",motivo:"Instrução não seguida"}],kits:0,observacoes:["Darmisson: aviso prévio 02/05","Gabriel Ortiz início 06/05 — Balneário","Diego Luiz início 18/05 — Floripa","Brasília e Floripa não bateram a meta"]}
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let meses=DADOS, mesAtual='2026-05', regras=REGRAS_DEF, nid=500;
+window._appReady=false;
+window._isSaving=false;
+
+function getMes(id){return meses.find(m=>m.id===id)||meses[meses.length-1]}
+function getD(){return getMes(mesAtual)}
+
+window._applyData=function(data){
+  meses=data.meses||DADOS;
+  mesAtual=data.mesAtual||'2026-05';
+  regras=data.regras||REGRAS_DEF;
+  nid=data.nid||500;
+  populateSel();
+  const at=document.querySelector('.tab.active');
+  renderTab(at?at.dataset.id:'overview');
+};
+
+window._initApp=function(data){
+  if(data){meses=data.meses||DADOS;mesAtual=data.mesAtual||'2026-05';regras=data.regras||REGRAS_DEF;nid=data.nid||500;}
+  window._appReady=true;
+  populateSel();
+  setTimeout(()=>renderOverview(),60);
+};
+
+async function saveAll(){
+  window._isSaving=true;
+  await window._fbSave({meses,mesAtual,regras,nid});
+  setTimeout(()=>window._isSaving=false,1500);
+}
+
+// ── CÁLCULOS ───────────────────────────────────────────────────────────────
+function getTipoPct(tipo,grav){
+  if(tipo==='Adv. verbal')return regras.advVerbal[grav]||regras.advVerbal.normal;
+  if(tipo==='Adv. escrita')return regras.advEscrita[grav]||regras.advEscrita.normal;
+  return 0;
+}
+function getDescOp(nome,d){
+  const b=d.operadores.find(x=>x.nome===nome);const base=b?.valor||0;if(!base)return 0;
+  let desc=0;(d.ocorrencias||[]).filter(o=>o.op===nome).forEach(o=>{desc+=base*(getTipoPct(o.tipo,o.grav||'normal')/100)});
+  return parseFloat(desc.toFixed(2));
+}
+function getLiqOp(nome,d){const b=d.operadores.find(x=>x.nome===nome);return Math.max(0,parseFloat(((b?.valor||0)-getDescOp(nome,d)).toFixed(2)))}
+function getKitsMes(d){const f=d.lojas.find(x=>x.nome==='Floripa');return(f&&f.kits>0)?f.kits:(d.kits||0)}
+function getOpsFloripa(d){return d.operadores.filter(o=>o.loja==='Floripa')}
+function getKitPorOp(d){const k=getKitsMes(d),n=getOpsFloripa(d).length||1;return parseFloat((k*regras.kitPorUnidade/n).toFixed(2))}
+function stOp(nome,d){
+  const ae=(d.ocorrencias||[]).filter(o=>o.op===nome&&o.tipo==='Adv. escrita').length;
+  const av=(d.ocorrencias||[]).filter(o=>o.op===nome&&o.tipo==='Adv. verbal').length;
+  if(ae>=3)return{l:'Risco alto',c:'bx-r'};
+  if(ae>=2||av>=2)return{l:'Atenção',c:'bx-y'};
+  if((d.ocorrencias||[]).some(o=>o.op===nome&&o.tipo==='Desligamento'))return{l:'Desligado',c:'bx-r'};
+  return{l:'Regular',c:'bx-g'};
+}
+function tc(t){return t==='Adv. escrita'||t==='Desligamento'?'bx-r':t==='Adv. verbal'?'bx-y':t==='Falta'?'bx-b':'bx-p'}
+
+// ── NAV ────────────────────────────────────────────────────────────────────
+let charts={};
+function dc(id){if(charts[id]){charts[id].destroy();delete charts[id]}}
+function populateSel(){const s=document.getElementById('sel-mes');s.innerHTML=meses.map(m=>`<option value="${m.id}" ${m.id===mesAtual?'selected':''}>${m.label}</option>`).join('')}
+function trocarMes(){mesAtual=document.getElementById('sel-mes').value;const at=document.querySelector('.tab.active');renderTab(at?at.dataset.id:'overview')}
+function setTab(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');el.dataset.id=id;
+  document.getElementById('modal-area').style.display='none';
+  setTimeout(()=>renderTab(id),20);
+}
+function renderTab(id){({overview:renderOverview,lojas:renderLojas,operadores:renderOperadores,kits:renderKits,ocorrencias:renderOcorrencias,historico:renderHistorico,relatorio:renderRelatorio})[id]?.()}
+
+// ── OVERVIEW ───────────────────────────────────────────────────────────────
+function renderOverview(){
+  const d=getD();
+  const te=d.lojas.reduce((s,l)=>s+(l.entregues||0),0),tm=d.lojas.reduce((s,l)=>s+l.meta,0);
+  const tLiq=d.operadores.reduce((s,o)=>s+getLiqOp(o.nome,d),0);
+  const tDesc=d.operadores.reduce((s,o)=>s+getDescOp(o.nome,d),0);
+  const tBruto=d.operadores.reduce((s,o)=>s+(o.valor||0),0);
+  const tErroDesc=d.lojas.reduce((s,l)=>s+(l.erros||0)*regras.erroPorUnidade,0);
+  const alertas=d.operadores.filter(o=>stOp(o.nome,d).l==='Atenção'||stOp(o.nome,d).l==='Risco alto');
+  const pct=te>0?Math.round(te/tm*100):0;
+  document.getElementById('kpis-ov').innerHTML=`
+    <div class="kpi green"><div class="kl">Entregas totais</div><div class="kv">${te.toLocaleString('pt-BR')}</div><div class="ks">Meta: ${tm.toLocaleString('pt-BR')} · ${pct}%</div></div>
+    <div class="kpi dark"><div class="kl">Alertas</div><div class="kv">${alertas.length}</div><div class="ks">${(d.ocorrencias||[]).length} ocorrências</div></div>
+    <div class="kpi yellow"><div class="kl">Desc. advertências</div><div class="kv" style="font-size:19px">${tDesc>0?brl(tDesc):'R$ 0'}</div><div class="ks">Erros: ${brl(tErroDesc)}</div></div>
+    <div class="kpi green"><div class="kl">Folha líquida</div><div class="kv" style="font-size:19px">${tLiq>0?brl(tLiq):'—'}</div><div class="ks">Bruto: ${brl(tBruto)}</div></div>`;
+  document.getElementById('ov-lojas').innerHTML=d.lojas.map(l=>{
+    const p=l.entregues>0?Math.round(l.entregues/l.meta*100):null;
+    const cls=p===null?'pa':p>=100?'pg':p>=80?'pa':'pr';
+    const cor=p===null?'#ca8a04':p>=100?'#16a34a':p>=80?'#ca8a04':'#dc2626';
+    const dErr=(l.erros||0)*regras.erroPorUnidade;
+    const kitsVal=l.nome==='Floripa'?getKitsMes(d):0;
+    return`<div style="padding:9px 0;border-bottom:1px solid #f1f5f9">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:13px;font-weight:600">${l.nome}</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          ${dErr>0?`<span class="desc-chip">-${brl(dErr)}</span>`:''}
+          ${l.bonusMeta>0?`<span class="bonus-chip">+R$${l.bonusMeta}</span>`:''}
+          ${kitsVal>0?`<span class="kit-badge">📦 ${kitsVal} kits</span>`:''}
+          <span style="font-size:13px;font-weight:700;color:${cor}">${p!==null?p+'%':'Aguard.'}</span>
+        </div>
+      </div>
+      <div class="pb-wrap"><div class="pb ${cls}" style="width:${p?Math.min(100,p):8}%"></div></div>
+      <div style="font-size:11px;color:#64748b;margin-top:3px">Meta ${l.meta.toLocaleString('pt-BR')}${l.entregues>0?' · '+l.entregues.toLocaleString('pt-BR')+' entregues':''}</div>
+    </div>`;
+  }).join('');
+  const tipos=['Adv. escrita','Adv. verbal','Falta','Atraso','Desligamento'];
+  const cores=['#dc2626','#ca8a04','#1d4ed8','#7c3aed','#374151'];
+  document.getElementById('ov-oc-tipos').innerHTML=tipos.map((t,i)=>{const c=(d.ocorrencias||[]).filter(o=>o.tipo===t).length;return`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1f5f9;font-size:13px"><span style="display:flex;align-items:center;gap:7px"><span style="width:10px;height:10px;border-radius:3px;background:${cores[i]};flex-shrink:0;display:inline-block"></span>${t}</span><span style="font-weight:600;color:${c>0?cores[i]:'#94a3b8'}">${c}</span></div>`}).join('');
+  document.getElementById('ov-alertas').innerHTML=alertas.length?alertas.map(o=>{const s=stOp(o.nome,d);return`<div style="background:${s.l==='Risco alto'?'#fef2f2':'#fffbeb'};border:1.5px solid ${s.l==='Risco alto'?'#fca5a5':'#fcd34d'};border-radius:8px;padding:8px 12px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center"><div><span style="font-size:13px;font-weight:600">${o.nome}</span><span style="font-size:11px;color:#64748b"> — ${o.loja}</span></div><span class="bx ${s.c}">${s.l}</span></div>`}).join(''):`<div style="font-size:13px;color:#16a34a;font-weight:600">✓ Sem alertas</div>`;
+}
+
+// ── LOJAS ──────────────────────────────────────────────────────────────────
+function renderLojas(){
+  const d=getD();
+  document.getElementById('lbl-erro').textContent=regras.erroPorUnidade;
+  document.getElementById('tab-lojas-body').innerHTML=d.lojas.map((l,i)=>{
+    const p=l.entregues>0?Math.round(l.entregues/l.meta*100):null;
+    const cor=p===null?'#ca8a04':p>=100?'#16a34a':p>=80?'#ca8a04':'#dc2626';
+    const cls=p===null?'bx-y':p>=100?'bx-g':p>=80?'bx-y':'bx-r';
+    const lab=p===null?'Aguardando':p>=100?'Na meta':p>=80?'Atenção':'Abaixo';
+    const dErr=(l.erros||0)*regras.erroPorUnidade;
+    return`<tr>
+      <td style="font-weight:600">${l.nome}</td>
+      <td><input class="ei sm" type="number" value="${l.meta}" onchange="updLoja(${i},'meta',this.value)"/></td>
+      <td><input class="ei sm" type="number" value="${l.entregues||''}" placeholder="0" onchange="updLoja(${i},'entregues',this.value)"/></td>
+      <td><input class="ei sm" type="number" value="${l.erros||''}" placeholder="0" onchange="updLoja(${i},'erros',this.value)"/></td>
+      <td style="color:${dErr>0?'#dc2626':'#94a3b8'};font-weight:600">${dErr>0?'-'+brl(dErr):'—'}</td>
+      <td><input class="ei sm" type="number" value="${l.bonusMeta||''}" placeholder="0" onchange="updLoja(${i},'bonusMeta',this.value)"/></td>
+      <td>
+        <input class="ei sm" type="number" value="${l.ativos||''}" placeholder="0" onchange="updLoja(${i},'ativos',this.value)" style="width:60px"/>
+        ${l.ativos>0?`<div style="font-size:10px;color:#ca8a04;font-weight:600;margin-top:2px">⏳ ${l.ativos} pend.</div>`:''}
+        ${l.nome==='Floripa'?`<div style="margin-top:4px"><input class="ei sm" type="number" value="${l.kits||''}" placeholder="kits" onchange="updLoja(${i},'kits',this.value)" style="width:60px;border-color:#c4b5fd"/><div style="font-size:10px;color:#7c3aed;font-weight:600;margin-top:1px">📦 kits</div></div>`:''}
+      </td>
+      <td style="font-weight:700;color:${cor}">${p!==null?p+'%':'—'}</td>
+      <td><span class="bx ${cls}">${lab}</span></td>
+    </tr>`;
+  }).join('');
+  dc('chart-lojas');
+  charts['chart-lojas']=new Chart(document.getElementById('chart-lojas'),{type:'bar',data:{labels:d.lojas.map(l=>l.nome.length>8?l.nome.substring(0,8)+'…':l.nome),datasets:[{label:'Entregues',data:d.lojas.map(l=>l.entregues||0),backgroundColor:'#16a34a',borderRadius:4,borderSkipped:false},{label:'Meta',data:d.lojas.map(l=>l.meta),backgroundColor:'#d1d5db',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#6b7280'}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6b7280'}}}}});
+}
+function updLoja(i,c,v){const d=getD();d.lojas[i][c]=parseFloat(v)||0;salvarSilent();renderLojas();renderOverview()}
+
+// ── OPERADORES ──────────────────────────────────────────────────────────────
+function renderOperadores(){
+  const d=getD();
+  const totalFolha=d.operadores.reduce((s,o)=>s+getLiqOp(o.nome,d),0);
+  let html=`<div class="card" style="margin-bottom:12px"><div class="ch"><span class="ct">💰 Total folha: <span style="color:#16a34a">${brl(totalFolha)}</span></span><button class="btn btn-b" onclick="showModal('addOp')">+ Operador</button></div></div>`;
+  LOJAS_NOMES.forEach(loja=>{
+    const ops=d.operadores.filter(o=>o.loja===loja);if(!ops.length)return;
+    const l=d.lojas.find(x=>x.nome===loja)||{entregues:0,erros:0,bonusMeta:0,meta:0};
+    const dErr=(l.erros||0)*regras.erroPorUnidade,baseCalc=l.entregues-dErr+l.bonusMeta;
+    const autoVal=parseFloat((baseCalc/ops.length).toFixed(2));
+    const p=l.entregues>0?Math.round(l.entregues/l.meta*100):null,ok=l.entregues>=l.meta&&l.entregues>0;
+    const isFlor=loja==='Floripa',kitsVal=isFlor?getKitsMes(d):0,kitPorOp=isFlor?getKitPorOp(d):0;
+    html+=`<div class="loja-card ${ok?'meta':p!==null&&p<80?'danger':'warn'}" style="margin-bottom:12px">
+      <div class="ch" style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:18px">${ok?'✅':'🔲'}</span>
+          <div><div style="font-size:15px;font-weight:700">${loja}</div>
+          <div style="font-size:11px;color:#64748b">${l.entregues.toLocaleString('pt-BR')} entregas · Meta ${l.meta.toLocaleString('pt-BR')}${dErr>0?` · <span style="color:#dc2626">-R$${dErr} erros</span>`:''}${l.bonusMeta>0?` · <span style="color:#16a34a">+R$${l.bonusMeta} meta</span>`:''}${isFlor&&kitsVal>0?` · <span style="color:#7c3aed">📦 ${kitsVal} kits (+${brl(kitPorOp)}/op)</span>`:''}</div></div>
+        </div>
+        <div style="text-align:right"><div style="font-size:12px;color:#64748b">Divisão auto: <strong style="color:#2563eb">${brl(autoVal)}/op</strong></div>
+        <button class="btn btn-b" style="font-size:11px;padding:3px 9px;margin-top:4px" onclick="aplicarDivisaoAuto('${loja}')">↻ Aplicar auto</button></div>
+      </div>
+      <table><thead><tr><th style="width:28%">Operador</th><th style="width:16%">Valor base</th>${isFlor?'<th style="width:14%">+Kits</th>':''}<th style="width:14%">Desc. ADV</th><th style="width:14%">Líquido</th><th style="width:12%">Status</th><th style="width:8%"></th></tr></thead><tbody>
+      ${ops.map(o=>{const idx=d.operadores.indexOf(o),desc=getDescOp(o.nome,d),liq=getLiqOp(o.nome,d)+(isFlor?kitPorOp:0),s=stOp(o.nome,d);
+        return`<tr><td><div style="font-weight:600">${o.nome}</div><div style="font-size:10px;color:#64748b">${o.obs||''}</div></td>
+        <td><input class="ei sm" type="number" step="0.01" value="${o.valor||''}" placeholder="${autoVal.toFixed(2)}" style="width:85px" onchange="updOp(${idx},this.value)"/></td>
+        ${isFlor?`<td style="color:#7c3aed;font-weight:600">${kitPorOp>0?'+'+brl(kitPorOp):'—'}</td>`:''}
+        <td style="color:${desc>0?'#dc2626':'#94a3b8'};font-weight:600">${desc>0?'-'+brl(desc):'—'}</td>
+        <td style="font-weight:700;color:#2563eb">${liq>0?brl(liq):'—'}</td>
+        <td><span class="bx ${s.c}" style="font-size:10px">${s.l}</span></td>
+        <td><button class="btn btn-r" onclick="remOp(${idx},'${o.nome.replace(/'/g,"\\'")}')">🗑</button></td></tr>`;
+      }).join('')}</tbody></table></div>`;
+  });
+  document.getElementById('ops-por-loja').innerHTML=html;
+}
+function updOp(i,v){const d=getD();d.operadores[i].valor=parseFloat(v)||0;salvarSilent();renderOperadores()}
+function remOp(i,nome){if(!confirm(`Remover "${nome}"?`))return;const d=getD();d.operadores.splice(i,1);salvarMes();renderOperadores();renderOverview()}
+function aplicarDivisaoAuto(loja){
+  const d=getD(),l=d.lojas.find(x=>x.nome===loja)||{entregues:0,erros:0,bonusMeta:0};
+  const dErr=(l.erros||0)*regras.erroPorUnidade,base=l.entregues-dErr+l.bonusMeta;
+  const ops=d.operadores.filter(o=>o.loja===loja);if(!ops.length)return;
+  const auto=parseFloat((base/ops.length).toFixed(2));
+  ops.forEach(o=>o.valor=auto);salvarMes();renderOperadores();showBanner();
+}
+
+// ── KITS FLORIPA ───────────────────────────────────────────────────────────
+function renderKits(){
+  const d=getD(),kits=getKitsMes(d),opsFlor=getOpsFloripa(d),kitPorOp=getKitPorOp(d),totalAno=meses.reduce((s,m)=>s+(m.kits||0),0);
+  document.getElementById('kpis-kits').innerHTML=`
+    <div class="kpi blue"><div class="kl">Kits este mês</div><div class="kv">${kits}</div><div class="ks">Floripa — não contam na meta</div></div>
+    <div class="kpi green"><div class="kl">Total bruto</div><div class="kv" style="font-size:19px">${brl(kits*regras.kitPorUnidade)}</div><div class="ks">R$${regras.kitPorUnidade},00 por kit</div></div>
+    <div class="kpi blue"><div class="kl">Por operador</div><div class="kv" style="font-size:19px">${kitPorOp>0?brl(kitPorOp):'—'}</div><div class="ks">${opsFlor.length} operadores</div></div>
+    <div class="kpi green"><div class="kl">Total no ano</div><div class="kv">${totalAno}</div><div class="ks">kits montados</div></div>`;
+  document.getElementById('tab-kits-body').innerHTML=meses.map((m,mi)=>{
+    const k=m.kits||0,opsF=m.operadores.filter(o=>o.loja==='Floripa').length||1,vpo=parseFloat((k*regras.kitPorUnidade/opsF).toFixed(2)),ativo=m.id===mesAtual;
+    return`<tr style="${ativo?'background:#eff6ff;':''}"><td style="font-weight:600">${m.label}${ativo?' <span class="bx bx-b" style="font-size:9px">Atual</span>':''}</td>
+      <td><input class="ei sm" type="number" value="${k}" onchange="updKits(${mi},this.value)" style="width:80px"/></td>
+      <td style="font-weight:700;color:#16a34a">${brl(k)}</td><td style="color:#64748b">${opsF} op.</td>
+      <td style="font-weight:700;color:#7c3aed">${vpo>0?brl(vpo):'—'}</td>
+      <td><span class="bx ${k>0?'bx-g':'bx-b'}" style="font-size:10px">${k>0?'✓ Lançado':'Aguardando'}</span></td>
+      <td><button class="btn btn-r" onclick="updKits(${mi},0)">✕</button></td></tr>`;
+  }).join('');
+  document.getElementById('kits-ops-lista').innerHTML=opsFlor.length
+    ?`<p style="font-size:12px;color:#64748b;margin-bottom:10px">${opsFlor.length} operador(es) em Floripa · ${brl(kitPorOp)} cada</p>`
+    +opsFlor.map(o=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid #f1f5f9">
+      <div><div style="font-size:13px;font-weight:600">${o.nome}</div><div style="font-size:11px;color:#64748b">${o.obs||'Floripa'}</div></div>
+      <div style="text-align:right"><div class="kit-badge">📦 +${brl(kitPorOp)}</div><div style="font-size:10px;color:#64748b;margin-top:3px">${kits} kits ÷ ${opsFlor.length} ops</div></div>
+    </div>`).join('')
+    :`<div style="font-size:13px;color:#94a3b8;padding:10px">Nenhum operador em Floripa neste mês</div>`;
+}
+function updKits(mi,v){const val=parseFloat(v)||0;meses[mi].kits=val;const f=meses[mi].lojas.find(x=>x.nome==='Floripa');if(f)f.kits=val;saveAll();renderKits();renderLojas()}
+
+// ── OCORRÊNCIAS ────────────────────────────────────────────────────────────
+function renderOcorrencias(){
+  const d=getD();
+  const ae=(d.ocorrencias||[]).filter(o=>o.tipo==='Adv. escrita').length,av=(d.ocorrencias||[]).filter(o=>o.tipo==='Adv. verbal').length;
+  const fa=(d.ocorrencias||[]).filter(o=>o.tipo==='Falta').length,at=(d.ocorrencias||[]).filter(o=>o.tipo==='Atraso').length;
+  document.getElementById('kpis-ocs').innerHTML=`
+    <div class="kpi dark"><div class="kl">Total</div><div class="kv">${(d.ocorrencias||[]).length}</div></div>
+    <div class="kpi red"><div class="kl">Adv. escritas</div><div class="kv">${ae}</div></div>
+    <div class="kpi yellow"><div class="kl">Adv. verbais</div><div class="kv">${av}</div></div>
+    <div class="kpi blue"><div class="kl">Faltas / Atrasos</div><div class="kv">${fa+at}</div></div>`;
+  document.getElementById('tab-ocs-body').innerHTML=(d.ocorrencias||[]).length
+    ?[...(d.ocorrencias||[])].sort((a,b)=>a.data.localeCompare(b.data)).map(o=>{const pct=getTipoPct(o.tipo,o.grav||'normal');return`<tr><td>${o.data}</td><td style="font-weight:600">${o.op}</td><td>${o.loja}</td><td><span class="bx ${tc(o.tipo)}">${o.tipo}</span></td><td style="color:${pct>0?'#dc2626':'#94a3b8'};font-weight:600">${pct>0?'-'+pct+'%':'—'}</td><td style="color:#64748b">${o.motivo}</td><td><button class="btn btn-r" onclick="delOc(${o.id})">🗑</button></td></tr>`}).join('')
+    :`<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:14px">Sem ocorrências</td></tr>`;
+}
+function delOc(id){const d=getD();d.ocorrencias=(d.ocorrencias||[]).filter(o=>o.id!==id);salvarSilent();renderOcorrencias();renderOverview()}
+
+// ── HISTÓRICO ──────────────────────────────────────────────────────────────
+function renderHistorico(){
+  const tTotal=meses.reduce((s,m)=>s+m.operadores.reduce((ss,o)=>ss+getLiqOp(o.nome,m),0),0);
+  const tEnt=meses.reduce((s,m)=>s+m.lojas.reduce((ss,l)=>ss+(l.entregues||0),0),0);
+  document.getElementById('kpis-hist').innerHTML=`
+    <div class="kpi dark"><div class="kl">Meses</div><div class="kv">${meses.length}</div></div>
+    <div class="kpi green"><div class="kl">Total entregas</div><div class="kv">${tEnt.toLocaleString('pt-BR')}</div></div>
+    <div class="kpi yellow"><div class="kl">Total ocorrências</div><div class="kv">${meses.reduce((s,m)=>s+(m.ocorrencias||[]).length,0)}</div></div>
+    <div class="kpi green"><div class="kl">Total pago</div><div class="kv" style="font-size:17px">${brl(tTotal)}</div></div>`;
+  document.getElementById('hist-lista').innerHTML=meses.map(m=>{
+    const tl=m.operadores.reduce((s,o)=>s+getLiqOp(o.nome,m),0),te=m.lojas.reduce((s,l)=>s+(l.entregues||0),0),tm=m.lojas.reduce((s,l)=>s+l.meta,0),pct=te>0?Math.round(te/tm*100):0;
+    return`<div style="border:1.5px solid ${m.id===mesAtual?'#1d4ed8':'#e2eaf8'};border-radius:10px;padding:10px 14px;margin-bottom:8px;cursor:pointer;background:${m.id===mesAtual?'#eff6ff':'transparent'}" onclick="document.getElementById('sel-mes').value='${m.id}';trocarMes()">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:13px;font-weight:700">${m.label}</span><span class="bx ${pct>=100?'bx-g':pct>=80?'bx-y':'bx-b'}" style="font-size:10px">${pct}%</span></div>
+      <div style="display:flex;gap:14px;font-size:11px;color:#64748b"><span>📦 ${te.toLocaleString('pt-BR')} entregas</span><span>⚠️ ${(m.ocorrencias||[]).length} ocorr.</span><span style="color:#16a34a;font-weight:600">${tl>0?brl(tl):'—'}</span></div>
+    </div>`;
+  }).join('');
+  dc('chart-hist');dc('chart-ent');
+  charts['chart-hist']=new Chart(document.getElementById('chart-hist'),{type:'bar',data:{labels:meses.map(m=>m.label.split(' ')[0]),datasets:[{label:'Folha',data:meses.map(m=>m.operadores.reduce((s,o)=>s+getLiqOp(o.nome,m),0)),backgroundColor:'#16a34a',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>brl(ctx.raw)}}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#94a3b8'}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#94a3b8',callback:v=>v>0?'R$'+Math.round(v):0}}}}});
+  charts['chart-ent']=new Chart(document.getElementById('chart-ent'),{type:'bar',data:{labels:meses.map(m=>m.label.split(' ')[0]),datasets:[{label:'Entregues',data:meses.map(m=>m.lojas.reduce((s,l)=>s+(l.entregues||0),0)),backgroundColor:'#3b82f6',borderRadius:4,borderSkipped:false},{label:'Meta',data:meses.map(m=>m.lojas.reduce((s,l)=>s+l.meta,0)),backgroundColor:'#d1d5db',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:10},color:'#94a3b8'}},y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:10},color:'#94a3b8'}}}}});
+}
+
+// ── RELATÓRIO ──────────────────────────────────────────────────────────────
+function renderRelatorio(){
+  const d=getD(),now=new Date(),dg=`${now.getDate().toString().padStart(2,'0')}/${(now.getMonth()+1).toString().padStart(2,'0')}/${now.getFullYear()}`;
+  const tLiq=d.operadores.reduce((s,o)=>s+getLiqOp(o.nome,d),0),tBruto=d.operadores.reduce((s,o)=>s+(o.valor||0),0),tDesc=d.operadores.reduce((s,o)=>s+getDescOp(o.nome,d),0);
+  const kits=getKitsMes(d),kitPorOp=getKitPorOp(d);
+  document.getElementById('rel-lbl').textContent=d.label;
+  document.getElementById('rel-content').innerHTML=`
+    <div style="display:flex;justify-content:space-between;padding-bottom:14px;border-bottom:3px solid #111;margin-bottom:18px">
+      <div><div style="font-size:22px;font-weight:700">OPS Lojas — Fechamento</div><div style="font-size:12px;color:#6b7280">${d.label} · Gerado em ${dg}</div></div>
+      <div style="text-align:right"><div style="font-size:13px;font-weight:700">${d.operadores.length} operadores · ${d.lojas.length} lojas</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px">
+      <div style="border:2px solid #111;border-radius:8px;padding:10px 14px"><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#6b7280;margin-bottom:4px">Entregas totais</div><div style="font-size:20px;font-weight:700;color:#16a34a">${d.lojas.reduce((s,l)=>s+(l.entregues||0),0).toLocaleString('pt-BR')}</div></div>
+      <div style="border:2px solid #111;border-radius:8px;padding:10px 14px"><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#6b7280;margin-bottom:4px">Folha bruta</div><div style="font-size:20px;font-weight:700">${brl(tBruto)}</div></div>
+      <div style="border:2px solid #111;border-radius:8px;padding:10px 14px"><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#6b7280;margin-bottom:4px">Descontos ADV</div><div style="font-size:20px;font-weight:700;color:#dc2626">${tDesc>0?brl(tDesc):'—'}</div></div>
+      <div style="border:2px solid #111;border-radius:8px;padding:10px 14px;background:#f0fdf4"><div style="font-size:10px;font-weight:600;text-transform:uppercase;color:#6b7280;margin-bottom:4px">Folha líquida</div><div style="font-size:20px;font-weight:700;color:#16a34a">${brl(tLiq)}</div></div>
+    </div>
+    <div style="margin-bottom:18px"><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:10px">🏪 Lojas</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:#111;color:#fff"><th style="padding:6px 9px;text-align:left">Loja</th><th style="padding:6px 9px;text-align:left">Meta</th><th style="padding:6px 9px;text-align:left">Entregues</th><th style="padding:6px 9px;text-align:left">%</th><th style="padding:6px 9px;text-align:left">Erros</th><th style="padding:6px 9px;text-align:left">Bônus meta</th><th style="padding:6px 9px;text-align:left">Status</th></tr></thead><tbody>
+    ${d.lojas.map(l=>{const p=l.entregues>0?Math.round(l.entregues/l.meta*100):0,ok=l.entregues>=l.meta&&l.entregues>0;return`<tr style="${ok?'background:#f0fdf4':''}"><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb;font-weight:600">${l.nome}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb">${l.meta.toLocaleString('pt-BR')}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb">${l.entregues.toLocaleString('pt-BR')}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb;font-weight:700;color:${ok?'#16a34a':'#dc2626'}">${p}%</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb;color:#dc2626">${l.erros||0}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb;color:#16a34a">${l.bonusMeta>0?'+R$'+l.bonusMeta:'—'}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb"><span style="background:${ok?'#dcfce7':'#fef3c7'};color:${ok?'#15803d':'#92400e'};padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600">${ok?'Na meta':'Abaixo'}</span></td></tr>`}).join('')}
+    </tbody></table></div>
+    <div style="margin-bottom:18px"><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:10px">💰 Bonificação por operador</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:#111;color:#fff"><th style="padding:6px 9px;text-align:left">Operador</th><th style="padding:6px 9px;text-align:left">Loja</th><th style="padding:6px 9px;text-align:left">Valor base</th><th style="padding:6px 9px;text-align:left">Desc. ADV</th><th style="padding:6px 9px;text-align:left">Kits</th><th style="padding:6px 9px;text-align:left">Líquido</th><th style="padding:6px 9px;text-align:left">Obs.</th></tr></thead><tbody>
+    ${d.operadores.map(o=>{const desc=getDescOp(o.nome,d),liq=getLiqOp(o.nome,d),isFlor=o.loja==='Floripa',kit=isFlor?kitPorOp:0;return`<tr><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb;font-weight:600">${o.nome}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb">${o.loja}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb">${brl(o.valor)}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb;color:${desc>0?'#dc2626':'#6b7280'}">${desc>0?'-'+brl(desc):'—'}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb;color:#7c3aed">${kit>0?'+'+brl(kit):'—'}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb;font-weight:700;color:${(liq+kit)>0?'#16a34a':'#6b7280'}">${(liq+kit)>0?brl(liq+kit):'—'}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb;color:#6b7280;font-size:11px">${o.obs||'—'}</td></tr>`}).join('')}
+    <tr style="background:#f0fdf4"><td colspan="5" style="padding:8px 9px;font-weight:700;text-align:right">TOTAL LÍQUIDO</td><td style="padding:8px 9px;font-weight:700;color:#16a34a;font-size:15px">${brl(tLiq)}</td><td></td></tr>
+    </tbody></table></div>
+    ${(d.ocorrencias||[]).length?`<div><div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid #111;padding-bottom:6px;margin-bottom:10px">⚠️ Ocorrências (${(d.ocorrencias||[]).length})</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:#111;color:#fff"><th style="padding:6px 9px;text-align:left">Data</th><th style="padding:6px 9px;text-align:left">Operador</th><th style="padding:6px 9px;text-align:left">Loja</th><th style="padding:6px 9px;text-align:left">Tipo</th><th style="padding:6px 9px;text-align:left">Desc.</th><th style="padding:6px 9px;text-align:left">Motivo</th></tr></thead><tbody>
+    ${(d.ocorrencias||[]).map(o=>{const pct=getTipoPct(o.tipo,o.grav||'normal');return`<tr><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb">${o.data}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb;font-weight:600">${o.op}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb">${o.loja}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb">${o.tipo}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb;color:${pct>0?'#dc2626':'#6b7280'}">${pct>0?'-'+pct+'%':'—'}</td><td style="padding:7px 9px;border-bottom:1px solid #e5e7eb;color:#6b7280">${o.motivo}</td></tr>`}).join('')}
+    </tbody></table></div>`:''}
+    <div style="margin-top:20px;padding-top:10px;border-top:2px solid #111;display:flex;justify-content:space-between;font-size:11px;color:#6b7280"><span>OPS Lojas — Sistema de gestão</span><span>Gerado em ${dg} · ${d.label}</span></div>`;
+}
+
+// ── MODAIS ─────────────────────────────────────────────────────────────────
+let mtype='';
+function showModal(t){
+  mtype=t;const d=getD();
+  const titles={novoMes:'Criar novo mês',oc:'Nova ocorrência / ADV',addOp:'Novo operador',addKit:'Lançar kits — Floripa',regras:'Editar regras de cálculo'};
+  document.getElementById('modal-title').textContent=titles[t]||t;
+  const mc=document.getElementById('modal-content');
+  const opOpts=d.operadores.map(o=>`<option value="${o.nome}|${o.loja}">${o.nome} (${o.loja})</option>`).join('');
+  const hj=hoje();
+  if(t==='novoMes'){
+    mc.innerHTML=`<div class="fr"><label>Nome (ex: Junho 2026)</label><input type="text" id="m-label"/></div><div class="fr"><label>Ano</label><input type="number" id="m-ano" value="2026"/></div><div class="fr"><label>Mês (1=jan … 12=dez)</label><input type="number" id="m-mes" value="${new Date().getMonth()+2}" min="1" max="12"/></div><div class="fr"><label>Copiar operadores de</label><select id="m-copiar">${meses.map(m=>`<option value="${m.id}">${m.label}</option>`).join('')}</select></div><p style="font-size:11px;color:#64748b;margin-top:4px">Valores, ocorrências e kits serão zerados.</p>`;
+  } else if(t==='oc'){
+    mc.innerHTML=`<div class="fr"><label>Data</label><input type="text" id="m-data" value="${hj}"/></div><div class="fr"><label>Operador</label><select id="m-op"><option value="">Selecione</option>${opOpts}</select></div><div class="fr"><label>Tipo</label><select id="m-tipo"><option>Atraso</option><option>Falta</option><option>Adv. verbal</option><option>Adv. escrita</option><option>Desligamento</option></select></div><div class="fr"><label>Gravidade</label><select id="m-grav"><option value="normal">Normal</option><option value="grave">Grave</option><option value="gravissima">Gravíssima (-100%)</option></select></div><div class="fr"><label>Motivo</label><textarea id="m-motivo"></textarea></div>`;
+  } else if(t==='addOp'){
+    mc.innerHTML=`<div class="fr"><label>Nome</label><input type="text" id="m-nome"/></div><div class="fr"><label>Loja</label><select id="m-loja"><option value="">Selecione</option>${LOJAS_NOMES.map(l=>`<option>${l}</option>`).join('')}</select></div><div class="fr"><label>Valor (0 para divisão automática)</label><input type="number" id="m-valor" value="0" step="0.01"/></div><div class="fr"><label>Observação</label><input type="text" id="m-obs" placeholder="ex: Início 01/06"/></div>`;
+  } else if(t==='addKit'){
+    const opsFlor=getOpsFloripa(d);
+    mc.innerHTML=`<div style="background:#ede9fe;border:1.5px solid #c4b5fd;border-radius:8px;padding:9px 12px;margin-bottom:12px;font-size:12px;color:#6d28d9;font-weight:600">📦 R$1,00 por kit · dividido entre ${opsFlor.length} operadores de Floripa</div><div class="fr"><label>Quantidade de kits</label><input type="number" id="m-kits" value="${getKitsMes(d)||0}" min="0"/></div>`;
+  } else if(t==='regras'){
+    mc.innerHTML=`<div class="fr"><label>Desconto por erro R$</label><input type="number" id="r-err" value="${regras.erroPorUnidade}"/></div><div class="fr"><label>Bônus por meta R$</label><input type="number" id="r-meta" value="${regras.bonusMeta}"/></div><div class="fr"><label>Valor por kit (R$)</label><input type="number" id="r-kit" step="0.01" value="${regras.kitPorUnidade}"/></div><p style="font-size:12px;font-weight:600;color:#374151;margin:10px 0 8px">Adv. verbal (%)</p><div class="fr"><label>Normal</label><input type="number" id="r-avn" value="${regras.advVerbal.normal}"/></div><div class="fr"><label>Grave</label><input type="number" id="r-avg" value="${regras.advVerbal.grave}"/></div><div class="fr"><label>Gravíssima</label><input type="number" id="r-avgg" value="${regras.advVerbal.gravissima}"/></div><p style="font-size:12px;font-weight:600;color:#374151;margin:10px 0 8px">Adv. escrita (%)</p><div class="fr"><label>Normal</label><input type="number" id="r-aen" value="${regras.advEscrita.normal}"/></div><div class="fr"><label>Grave</label><input type="number" id="r-aeg" value="${regras.advEscrita.grave}"/></div><div class="fr"><label>Gravíssima</label><input type="number" id="r-aegg" value="${regras.advEscrita.gravissima}"/></div>`;
+  }
+  document.getElementById('modal-area').style.display='flex';
+}
+function closeModal(){document.getElementById('modal-area').style.display='none'}
+
+document.getElementById('msave').onclick=function(){
+  const d=getD();
+  if(mtype==='novoMes'){
+    const label=document.getElementById('m-label').value.trim();if(!label)return alert('Informe o nome');
+    const ano=parseInt(document.getElementById('m-ano').value),mes=parseInt(document.getElementById('m-mes').value)-1;
+    const base=getMes(document.getElementById('m-copiar').value);
+    const idNovo=`${ano}-${String(mes+1).padStart(2,'0')}`;
+    if(meses.find(m=>m.id===idNovo))return alert('Mês já existe');
+    meses.push({id:idNovo,label,ano,mes,lojas:LOJAS_NOMES.map(n=>({nome:n,meta:0,entregues:0,erros:0,bonusMeta:0,ativos:0,kits:0})),operadores:base.operadores.map(o=>({...o,valor:0,obs:''})),ocorrencias:[],kits:0,observacoes:[]});
+    mesAtual=idNovo;saveAll();populateSel();document.getElementById('sel-mes').value=idNovo;closeModal();renderOverview();showBanner();
+  } else if(mtype==='oc'){
+    const dp=(document.getElementById('m-op').value||'').split('|');if(!dp[0])return alert('Selecione');
+    d.ocorrencias=d.ocorrencias||[];
+    d.ocorrencias.push({id:nid++,data:document.getElementById('m-data').value,op:dp[0],loja:dp[1]||'',tipo:document.getElementById('m-tipo').value,grav:document.getElementById('m-grav').value,motivo:document.getElementById('m-motivo').value||''});
+    salvarMes();closeModal();renderOcorrencias();renderOverview();
+  } else if(mtype==='addOp'){
+    const nome=document.getElementById('m-nome').value.trim(),loja=document.getElementById('m-loja').value;
+    if(!nome||!loja)return alert('Preencha nome e loja');
+    d.operadores.push({nome,loja,valor:parseFloat(document.getElementById('m-valor').value)||0,obs:document.getElementById('m-obs').value});
+    salvarMes();closeModal();renderOperadores();
+  } else if(mtype==='addKit'){
+    d.kits=parseInt(document.getElementById('m-kits').value)||0;salvarMes();closeModal();renderKits();renderOverview();
+  } else if(mtype==='regras'){
+    regras.erroPorUnidade=parseFloat(document.getElementById('r-err').value)||0;
+    regras.bonusMeta=parseFloat(document.getElementById('r-meta').value)||0;
+    regras.kitPorUnidade=parseFloat(document.getElementById('r-kit').value)||1;
+    regras.advVerbal.normal=parseFloat(document.getElementById('r-avn').value)||0;
+    regras.advVerbal.grave=parseFloat(document.getElementById('r-avg').value)||0;
+    regras.advVerbal.gravissima=parseFloat(document.getElementById('r-avgg').value)||0;
+    regras.advEscrita.normal=parseFloat(document.getElementById('r-aen').value)||0;
+    regras.advEscrita.grave=parseFloat(document.getElementById('r-aeg').value)||0;
+    regras.advEscrita.gravissima=parseFloat(document.getElementById('r-aegg').value)||0;
+    saveAll();closeModal();showBanner();
+  }
+};
+
+function salvarMes(){const d=getD();const i=meses.findIndex(m=>m.id===mesAtual);if(i>=0)meses[i]=d;saveAll();showBanner()}
+function salvarSilent(){const d=getD();const i=meses.findIndex(m=>m.id===mesAtual);if(i>=0)meses[i]=d;saveAll()}
+function showBanner(){const b=document.getElementById('save-banner');b.style.display='block';setTimeout(()=>b.style.display='none',2000)}
+function exportarTxt(){
+  const d=getD(),tLiq=d.operadores.reduce((s,o)=>s+getLiqOp(o.nome,d),0);
+  let t=`OPS LOJAS — ${d.label.toUpperCase()}\n${'='.repeat(44)}\n\n`;
+  t+='LOJAS\n'+'-'.repeat(30)+'\n';
+  d.lojas.forEach(l=>{const p=l.entregues>0?Math.round(l.entregues/l.meta*100):0;t+=`${l.nome.padEnd(18)} ${l.entregues}/${l.meta} (${p}%) erros:${l.erros||0}\n`});
+  t+='\nBONIFICAÇÃO\n'+'-'.repeat(30)+'\n';
+  d.operadores.forEach(o=>{const liq=getLiqOp(o.nome,d);if(o.valor>0)t+=`${o.nome.padEnd(24)} base:${brl(o.valor)} líq:${brl(liq)}\n`});
+  t+=`\n${'─'.repeat(30)}\nTOTAL LÍQUIDO: ${brl(tLiq)}\n`;
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download=`ops_lojas_${d.label.replace(' ','_').toLowerCase()}.txt`;a.click();
+}
+</script>
+</body>
+</html>
